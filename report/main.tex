@@ -138,6 +138,24 @@ This idea is illustrated in figure~\ref{fig:avg_embedding_sketch}.
     \label{fig:avg_embedding_sketch}
 \end{figure}
 
+\subsection{Combining Multiple Backbones}
+To potentially make use of this we explored multiple methods to incorporate the average in the foreign embedding space during the reconstruction process.
+
+Since most of the used networks apply a ReLu activation to their outputs, simply calculating the arithmetic average in each coordinate leads to a huge distribution shift of the embeddings.
+To reduce that shift, we can perform the averaging in the latent space before applying the ReLu activation.
+The effect of this can bee seen in figure~\ref{fig:relu_norelu_distribution_shift}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{figures/relu-norelu-distribution-shift.png}
+    \caption{
+       Distribution of embeddings in different backbones.
+       Top: Average calculated after ReLu activation.
+       Bottom: Average calculated before ReLu activation.
+    }
+    \label{fig:relu_norelu_distribution_shift}
+\end{figure}
+
 \section{Results}
 Presentation and analysis of experimental results. Include tables and figures as needed.
 
