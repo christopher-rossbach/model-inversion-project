@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "pull-figures",
+            "type": "shell",
+            "command": "bash",
+            "args": ["pull_figures.sh"],
+            "options": {
+                "cwd": "${workspaceFolder}/report/figures"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

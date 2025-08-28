@@ -111,13 +111,51 @@ From this observation we conclude, that a improvement in reconstruction quality 
 \subsection{Average of Foreign Embeddings}
 Another important observation is that if we have two different backbones $f$ and $h$, a private image $x^*$ and a slightly modified version $x^*_p$ of the private image for which $f(x^*)\approx f(x^*_p)$ then we also observe $h(x^*)\approx h(x^*_p)$.
 That is, if we modify the private image only slightly, the embeddings produced by different backbones remain consistent.
-However, this behaviour does not apply to reconstructions: for a reconstruction $\hat x_f$ obtained by procedure described in~\ref{base_method} with respect to the backbone $f$ that suffices $f(\hat x_f)\approx f(x^*)$ we observe strong differences in the embedding under $h$, $h(\hat x_f)\not\approx h(x^*)$.
+However, this behaviour does not apply to reconstructions: for a reconstruction $\hat x_f$ obtained by procedure described in~\ref{base_method} with respect to the backbone $f$ that suffices $f(\hat x_f)\approx f(x^*)$ we observe strong differences in the embedding under $h$, $d_h(h(\hat x_f),h(x^*)) \gg d_f(f(\hat x_f),f(x^*))\approx 0$.
 The same is true for two different reconstructions $\hat x_{f,0}$ and $\hat x_{f,1}$: while $f(\hat x_{f,0})\approx f(\hat x_{f,1})$ we observe $h(\hat x_{f,0})\not\approx h(\hat x_{f,1})$.
 
 Furthermore, if we have a set of reconstruction $X_f = \{\hat x_{f,0}, \hat x_{f,1}, \dots\}$ we observe that that the average embedding under $h$ of the reconstructions $X_f$ is closer to the embedding und $h$ of the private image then the average distance of the reconstructions: $$d_h\left(\overline{h(X_f)}, h(x^*)\right) < \overline{d_h(h(X_f), h(x^*))}.$$
 We often observe the even stronger statement, that the averaged embedding is closer to the embedding of the private image then every single reconstruction: $$\forall\hat x \in X_f: d_h\left(\overline{h(X_f)}, h(x^*)\right) < d_h(h(\hat x), h(x^*)).$$
+This effect can be seen in figure~\ref{fig:avg_distance_scatter}.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{figures/avg-distance-scatter.png}
+    \caption{
+       Comparison of embedding distances for noised images, reconstructions and averaged reconstruction embeddings for $f$ being a ResNet backbone, and $h$ being a VGG backbone (left) and $h$ being a CLIP backbone (right).
+    }
+    \label{fig:avg_distance_scatter}
+\end{figure}
 
 That leads to the intuitive assumption the that embeddings under a foreign backbone $h$ scatter around the embedding of the private image $h(x^*)$ and do not deviate in a specific direction.
+This idea is illustrated in figure~\ref{fig:avg_embedding_sketch}.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{figures/avg-embedding-sketch.png}
+    \caption{
+       Illustration of the imagined scattering behavior of embeddings under a backbone used for reconstruction $f$ (left) and a foreign backbone $h$ (right).
+       The average embedding in the foreign space is closer to the embedding of the private image than the embeddings of the reconstructions.
+    }
+    \label{fig:avg_embedding_sketch}
+\end{figure}
+
+\subsection{Combining Multiple Backbones}
+To potentially make use of this we explored multiple methods to incorporate the average in the foreign embedding space during the reconstruction process.
+
+Since most of the used networks apply a ReLu activation to their outputs, simply calculating the arithmetic average in each coordinate leads to a huge distribution shift of the embeddings.
+To reduce that shift, we can perform the averaging in the latent space before applying the ReLu activation.
+The effect of this can bee seen in figure~\ref{fig:relu_norelu_distribution_shift}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{figures/relu-norelu-distribution-shift.png}
+    \caption{
+       Distribution of embeddings in different backbones.
+       Top: Average calculated after ReLu activation.
+       Bottom: Average calculated before ReLu activation.
+    }
+    \label{fig:relu_norelu_distribution_shift}
+\end{figure}
+
 \section{Results}
 Presentation and analysis of experimental results. Include tables and figures as needed.
 
