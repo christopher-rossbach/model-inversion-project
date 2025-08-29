@@ -52,17 +52,23 @@ We take the resolution steps used in~\cite{kazemiWhatWeLearn2024} and find addin
 
 At each iteration, we update the reconstruction $x$ in the possibly smaller space $\mathbb{R}^{3\times n \times n}$ from which we retrieve the full size reconstruction proposal $\mathbb{R}^{3\times N \times N}\ni\hat{x} = S_N(x)$ by using a differentiable scaling function $S_k:\mathbb{R}^{3\times n \times n}\rightarrow\mathbb{R}^{3\times k \times k}$.
 The next reconstruction $x$ is determined by
-$$
+\begin{equation}\label{eq:update_rule}
 x^{(t)} = S_{n_t}\left(x^{(t-1)} - \eta \dfrac{\nabla \mathcal{L}(x^{(t-1)}, y^*)}{\|\nabla \mathcal{L}(x^{(t-1)}, y^*)\|_2}\right),
-$$
+\end{equation}
 where $t$ denotes the iteration step, $n_t$ the resolution at step $t$, $\eta$ is the learning rate, and $\mathcal{L}$ the loss function.
 This process is repeated for 3000 iterations after which no notable improvement was noticed in practice.
+Normally we perform multiple reconstructions in parallel, because the result depends on the initialization $x^{(0)}$.
+We denote such a set of equally constructed reconstructions as $X^{(t)} = \{x^{(t)}_0, x^{(t)}_1, \dots, x^{(t)}_{m-1}\}$ where $m$ is the number of parallel reconstructions.
 
 For now, the loss function $\mathcal{L}$ is defined as
-$$
-\mathcal{L}(x, y^*) = d(f(A(S_N(x))), y^*) + \mathcal{R}(S_N(x)),
-$$
-where $A$ is a randomized augmentation function as described in Section~\ref{augs}, and $d$ is a distance function that is dependent on the used backbone $f$ and $\mathcal{R}$ is a regularization term as described in Section~\ref{reg}.
+\begin{equation}\label{eq:loss_function_base}
+\mathcal{L}(x, y^*) = \mathcal{L}_{f}(x, y^*) + \lambda_\mathcal{R}\cdot\mathcal{R}(S_N(x)),
+\end{equation}
+with
+\begin{equation}\label{eq:loss_function_f}
+    \mathcal{L}_f(x, y^*) = d_{f}(f(A(S_N(x))), y^*),
+\end{equation}
+where $A$ is a randomized augmentation function as described in Section~\ref{augs}, and $d_f$ is a distance function that is dependent on the used backbone $f$ and $\mathcal{R}$ is a regularization term as described in Section~\ref{reg}.
 
 \subsection{Augmentations}\label{augs}
 As proposed in~\cite{ghiasiPlugInInversionModelAgnostic2021} we employ a set of differentiable augmentations to improve the robustness of the reconstruction.
@@ -88,7 +94,6 @@ This quadratic dead zone penalty function allows for punishment-free variation i
 The use of this penalty function makes sure, that the this regularization term does not loose importance when adding additional terms to the objective function of the optimization.
 A parameter selection of $\alpha = 0.3$ and $\beta = 10$ was found to yield good results in practice.\footnote{We could pin this to the avg value of e.g. Imagenet Data.}
 
-\section{Experiments}
 \subsection{Impact of Inverted Model}
 The reconstruction method described in Section~\ref{base_method} yields visibly different results when using different backbones $f$.
 It is to note, that the reconstruction for different backbones does not strictly yield better or worse reconstructions, but rather reconstruction with qualitatively different details.
@@ -115,7 +120,7 @@ However, this behaviour does not apply to reconstructions: for a reconstruction 
 The same is true for two different reconstructions $\hat x_{f,0}$ and $\hat x_{f,1}$: while $f(\hat x_{f,0})\approx f(\hat x_{f,1})$ we observe $h(\hat x_{f,0})\not\approx h(\hat x_{f,1})$.
 
 Furthermore, if we have a set of reconstruction $X_f = \{\hat x_{f,0}, \hat x_{f,1}, \dots\}$ we observe that that the average embedding under $h$ of the reconstructions $X_f$ is closer to the embedding und $h$ of the private image then the average distance of the reconstructions: $$d_h\left(\overline{h(X_f)}, h(x^*)\right) < \overline{d_h(h(X_f), h(x^*))}.$$
-We often observe the even stronger statement, that the averaged embedding is closer to the embedding of the private image then every single reconstruction: $$\forall\hat x \in X_f: d_h\left(\overline{h(X_f)}, h(x^*)\right) < d_h(h(\hat x), h(x^*)).$$
+We often observe the even stronger statement, that the averaged embedding is closer to the embedding of the private image then every single reconstruction: $$\forall\hat x_f \in X_f: d_h\left(\overline{h(X_f)}, h(x^*)\right) < d_h(h(\hat x_f), h(x^*)).$$
 This effect can be seen in figure~\ref{fig:avg_distance_scatter}.
 \begin{figure}[ht]
     \centering
@@ -141,23 +146,33 @@ This idea is illustrated in figure~\ref{fig:avg_embedding_sketch}.
 \subsection{Combining Multiple Backbones}
 To potentially make use of this we explored multiple methods to incorporate the average in the foreign embedding space during the reconstruction process.
 
-Since most of the used networks apply a ReLu activation to their outputs, simply calculating the arithmetic average in each coordinate leads to a huge distribution shift of the embeddings.
-To reduce that shift, we can perform the averaging in the latent space before applying the ReLu activation.
+Since most of the used networks apply a ReLu activation as their last non-linearity, simply calculating the arithmetic average in each coordinate leads to a huge shift in the shape of the distribution of embeddings.
+To reduce that shift, we can perform the averaging in the latent space before applying the last ReLu activation.
 The effect of this can bee seen in figure~\ref{fig:relu_norelu_distribution_shift}.
+We perform the experiments on both, the truncated and the original backbones.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{figures/relu-norelu-distribution-shift.png}
     \caption{
        Distribution of embeddings in different backbones.
-       Top: Average calculated after ReLu activation.
-       Bottom: Average calculated before ReLu activation.
+       Top: Value distribution under original backbone.
+       Bottom: Value distribution under modified backbone with the last ReLu removed.
     }
     \label{fig:relu_norelu_distribution_shift}
 \end{figure}
 
+We incorporate the average embedding in a foreign space by extending loss function from equation~\ref{eq:loss_function_base}:
+\begin{equation}\label{eq:loss_function}
+\mathcal{L}(x, y^*, y_h) = \mathcal{L}_{f}(x, y^*) + \lambda_h \cdot \mathcal{L}_{h}(x, y_h) + \lambda_{\mathcal{R}}\cdot\mathcal{R}(S_N(x))
+\end{equation}
+where $\mathcal{L}_{h}$ is defined as in equation~\ref{eq:loss_function_f} and $y_h$ is a element in the foreign space.
+We will choose $y_h$ to either be $\overline{h(X^{(t)})}$, the average embedding of the current reconstructions in the foreign space, or $\overline{h(X_f)}$, the average embedding of reconstructions of previously completed reconstruction run with the loss function from equation~\ref{eq:loss_function_base}.
+
 \section{Results}
-Presentation and analysis of experimental results. Include tables and figures as needed.
+We conducted a series of experiments to evaluate the effectiveness of the proposed method.
+We experimented with different choices of the foreign backbone $h$ and the construction of $y_h$.
+
 
 \section{Discussion}
 Interpretation of results, limitations, and potential improvements.
