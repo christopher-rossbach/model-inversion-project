@@ -62,7 +62,7 @@ We denote such a set of equally constructed reconstructions as $X^{(t)} = \{x^{(
 
 For now, the loss function $\mathcal{L}$ is defined as
 \begin{equation}\label{eq:loss_function_base}
-\mathcal{L}(x, y^*) = \mathcal{L}_{f}(x, y^*) + \lambda_\mathcal{R}\cdot\mathcal{R}(S_N(x)),
+\mathcal{L}(x, y^*) = \mathcal{L}_{f}(x, y^*) + \mathcal{R}(S_N(x)),
 \end{equation}
 with
 \begin{equation}\label{eq:loss_function_f}
@@ -92,7 +92,7 @@ g_{\alpha,\beta}(x) = \text{relu}(x - \alpha) + \beta\cdot\text{relu}(x - \alpha
 $$
 This quadratic dead zone penalty function allows for punishment-free variation in the interval $\lbrack-\alpha,\alpha\rbrack$ and (for big enough $\beta$) limits the total variation to be close to $\alpha$.
 The use of this penalty function makes sure, that the this regularization term does not loose importance when adding additional terms to the objective function of the optimization.
-A parameter selection of $\alpha = 0.3$ and $\beta = 10$ was found to yield good results in practice.\footnote{We could pin this to the avg value of e.g. Imagenet Data.}
+A parameter selection of $\alpha = 0.3$ and $\beta = 10$ was found to yield good results in practice.\footnote{We could pin this to the avg value of e.g. ImageNet Data.}
 
 \subsection{Impact of Inverted Model}
 The reconstruction method described in Section~\ref{base_method} yields visibly different results when using different backbones $f$.
@@ -143,7 +143,7 @@ This idea is illustrated in figure~\ref{fig:avg_embedding_sketch}.
     \label{fig:avg_embedding_sketch}
 \end{figure}
 
-\subsection{Combining Multiple Backbones}
+\subsection{Combining Multiple Backbones}\label{combining_backbones}
 To potentially make use of this we explored multiple methods to incorporate the average in the foreign embedding space during the reconstruction process.
 
 Since most of the used networks apply a ReLu activation as their last non-linearity, simply calculating the arithmetic average in each coordinate leads to a huge shift in the shape of the distribution of embeddings.
@@ -164,15 +164,22 @@ We perform the experiments on both, the truncated and the original backbones.
 
 We incorporate the average embedding in a foreign space by extending loss function from equation~\ref{eq:loss_function_base}:
 \begin{equation}\label{eq:loss_function}
-\mathcal{L}(x, y^*, y_h) = \mathcal{L}_{f}(x, y^*) + \lambda_h \cdot \mathcal{L}_{h}(x, y_h) + \lambda_{\mathcal{R}}\cdot\mathcal{R}(S_N(x))
+\mathcal{L}(x, y^*, y_h) = \mathcal{L}_{f}(x, y^*) + \mathcal{L}_{h}(x, y_h) + \mathcal{R}(S_N(x))
 \end{equation}
 where $\mathcal{L}_{h}$ is defined as in equation~\ref{eq:loss_function_f} and $y_h$ is a element in the foreign space.
 We will choose $y_h$ to either be $\overline{h(X^{(t)})}$, the average embedding of the current reconstructions in the foreign space, or $\overline{h(X_f)}$, the average embedding of reconstructions of previously completed reconstruction run with the loss function from equation~\ref{eq:loss_function_base}.
 
-\section{Results}
+\section{Experiments}
 We conducted a series of experiments to evaluate the effectiveness of the proposed method.
 We experimented with different choices of the foreign backbone $h$ and the construction of $y_h$.
 
+For the presented experiments we fixed $f$ to be a ResNet-50, pretrained on ImageNet without its classification layer.
+For $h$ we explored different ResNet backbones, ResNet-18, ResNet-34, ResNet-50, ResNet-101 and ResNet-152 (referred to as rn18, rn34, rn50, rn101, rn152), VGG-16 and VGG-19 (referred to as vgg16 and vgg19) and a CLIP ViT-L/14 (referred to as clip).
+For all of them (except clip) we used a model pretrained on ImageNet without its classification layer and also performed the experiments on the original and the version without the last ReLU activation (denoted by a -nrl suffix).
+For the CLIP model, we used an OpenAI pretrained version without any modifications presented in~\cite{radfordLearningTransferableVisual2021}.
+
+The calculation of $y_h$ was performed by using $m=8$ parallel reconstructions and in the two different ways described in Section~\ref{combining_backbones}:
+We choose $y_h$ to be the average of the current iteration ($y_h^\text{avg}=\overline{h(X^{(t)})}$) or to be a reference vector obtained by independently and previously completed run ($y_h^\text{ref}=\overline{h(X_f)}$).
 
 \section{Discussion}
 Interpretation of results, limitations, and potential improvements.
