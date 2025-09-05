@@ -6,6 +6,8 @@
 \usepackage{hyperref}
 \usepackage{geometry}
 \usepackage{cite}
+\usepackage{xcolor}
+
 \geometry{margin=1in}
 
 \title{Improving Model Inversion Attacks Using Additional Backbones}
@@ -176,7 +178,22 @@ We experimented with different choices of the foreign backbone $h$ and the const
 For the presented experiments we fixed $f$ to be a ResNet-50, pretrained on ImageNet without its classification layer.
 For $h$ we explored different ResNet backbones, ResNet-18, ResNet-34, ResNet-50, ResNet-101 and ResNet-152 (referred to as rn18, rn34, rn50, rn101, rn152), VGG-16 and VGG-19 (referred to as vgg16 and vgg19) and a CLIP ViT-L/14 (referred to as clip).
 For all of them (except clip) we used a model pretrained on ImageNet without its classification layer and also performed the experiments on the original and the version without the last ReLU activation (denoted by a -nrl suffix).
-For the CLIP model, we used an OpenAI pretrained version without any modifications presented in~\cite{radfordLearningTransferableVisual2021}.
+For the CLIP model, we used an OpenAI pretrained version as presented in~\cite{radfordLearningTransferableVisual2021}.
+As metrics for the evaluation of the reconstruction quality we used the structural similarity index measure (SSIM)~\cite{zhouwangImageQualityAssessment2004}, the learned perceptual image patch similarity (LPIPS)~\cite{zhangUnreasonableEffectivenessDeep2018} as well as the cosine similarity based distance to the ground truth CLIP embedding of the image ($\mathcal{L}_{\text{clip}}(\hat x, \text{clip}(x))$).
+The SSIM value is supplemented by LPIPS, which is used to measure perceptual similarity, as a human viewer would perceive it and by the CLIP loss, which measures how well the reconstruction captures the semantic content of the original image.
+The results can be seen in table~\ref{tab:results_comparison}\footnote{Add standard deviations.}.
+
+\begin{table*}[ht]
+    \centering
+        \input{figures/experiments_table}
+        \caption{
+            Comparison of reconstruction quality for different choices of $y_h$.
+            SSIM: higher is better.
+            LPIPS and CLIP Loss: lower is better.
+            Placeholders (--) to be filled with experimental results.
+        }
+        \label{tab:results_comparison}
+\end{table*}
 
 The calculation of $y_h$ was performed by using $m=8$ parallel reconstructions and in the two different ways described in Section~\ref{combining_backbones}:
 We choose $y_h$ to be the average of the current iteration ($y_h^\text{avg}=\overline{h(X^{(t)})}$) or to be a reference vector obtained by independently and previously completed run ($y_h^\text{ref}=\overline{h(X_f)}$).
