@@ -50,6 +50,23 @@
   langid = {english}
 }
 
+@inproceedings{shenRANSACFlowGenericTwoStage2020,
+  title = {{{RANSAC-Flow}}: {{Generic Two-Stage Image Alignment}}},
+  shorttitle = {{{RANSAC-Flow}}},
+  booktitle = {Computer {{Vision}} – {{ECCV}} 2020},
+  author = {Shen, Xi and Darmon, François and Efros, Alexei A. and Aubry, Mathieu},
+  editor = {Vedaldi, Andrea and Bischof, Horst and Brox, Thomas and Frahm, Jan-Michael},
+  date = {2020},
+  pages = {618--637},
+  publisher = {Springer International Publishing},
+  location = {Cham},
+  doi = {10.1007/978-3-030-58548-8_36},
+  abstract = {This paper considers the generic problem of dense alignment between two images, whether they be two frames of a video, two widely different views of a scene, two paintings depicting similar content, etc. Whereas each such task is typically addressed with a domain-specific solution, we show that a simple unsupervised approach performs surprisingly well across a range of tasks. Our main insight is that parametric and non-parametric alignment methods have complementary strengths. We propose a two-stage process: first, a feature-based parametric coarse alignment using one or more homographies, followed by non-parametric fine pixel-wise alignment. Coarse alignment is performed using RANSAC on off-the-shelf deep features. Fine alignment is learned in an unsupervised way by a deep network which optimizes a standard structural similarity metric (SSIM) between the two images, plus cycle-consistency. Despite its simplicity, our method shows competitive results on a range of tasks and datasets, including unsupervised optical flow on KITTI, dense correspondences on Hpatches, two-view geometry estimation on YFCC100M, localization on Aachen Day-Night, and, for the first time, fine alignment of artworks on the Brughel dataset. Our code and data are available at http://imagine.enpc.fr/\textasciitilde shenx/RANSAC-Flow/.},
+  isbn = {978-3-030-58548-8},
+  langid = {english},
+  keywords = {Applications to art,Unsupervised dense image alignment}
+}
+
 @inproceedings{yinDreamingDistillDataFree2020,
   title = {Dreaming to {{Distill}}: {{Data-Free Knowledge Transfer}} via {{DeepInversion}}},
   shorttitle = {Dreaming to {{Distill}}},
@@ -59,6 +76,23 @@
   url = {https://openaccess.thecvf.com/content_CVPR_2020/html/Yin_Dreaming_to_Distill_Data-Free_Knowledge_Transfer_via_DeepInversion_CVPR_2020_paper.html},
   urldate = {2025-08-26},
   eventtitle = {Proceedings of the {{IEEE}}/{{CVF Conference}} on {{Computer Vision}} and {{Pattern Recognition}}}
+}
+
+@inproceedings{yinSeeGradientsImage2021,
+  title = {See through {{Gradients}}: {{Image Batch Recovery}} via {{GradInversion}}},
+  shorttitle = {See through {{Gradients}}},
+  author = {Yin, Hongxu and Mallya, Arun and Vahdat, Arash and Alvarez, Jose M. and Kautz, Jan and Molchanov, Pavlo},
+  date = {2021-06},
+  pages = {16332--16341},
+  publisher = {IEEE},
+  location = {Nashville, TN, USA},
+  doi = {10.1109/CVPR46437.2021.01607},
+  url = {https://ieeexplore.ieee.org/document/9577731/},
+  urldate = {2025-06-29},
+  abstract = {Training deep neural networks requires gradient estimation from data batches to update parameters. Gradients per parameter are averaged over a set of data and this has been presumed to be safe for privacy-preserving training in joint, collaborative, and federated learning applications. Prior work only showed the possibility of recovering input data given gradients under very restrictive conditions – a single input point, or a network with no non-linearities, or a small 32 ˆ 32 px input batch. Therefore, averaging gradients over larger batches was thought to be safe. In this work, we introduce GradInversion, using which input images from a larger batch (8 – 48 images) can also be recovered for large networks such as ResNets (50 layers), on complex datasets such as ImageNet (1000 classes, 224 ˆ 224 px). We formulate an optimization task that converts random noise into natural images, matching gradients while regularizing image fidelity. We also propose an algorithm for target class label recovery given gradients. We further propose a group consistency regularization framework, where multiple agents starting from different random seeds work together to find an enhanced reconstruction of the original data batch. We show that gradients encode a surprisingly large amount of information, such that all the individual images can be recovered with high fidelity via GradInversion, even for complex datasets, deep networks, and large batch sizes.},
+  eventtitle = {2021 {{IEEE}}/{{CVF Conference}} on {{Computer Vision}} and {{Pattern Recognition}} ({{CVPR}})},
+  isbn = {978-1-6654-4509-2},
+  langid = {english}
 }
 
 @inproceedings{zhangUnreasonableEffectivenessDeep2018,
