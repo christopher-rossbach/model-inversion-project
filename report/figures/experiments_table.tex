@@ -1,0 +1,39 @@
+\begin{tabular}{|l|l|l|c|c|c|}
+\hline
+Type & ReLU & Backbone $h$ & SSIM $\uparrow$ & LPIPS $\downarrow$ & CLIP cos sim $\uparrow$ \\
+\hline
+baseline & -- & none & \texttt{0.207} {\color{black}\texttt{(+0.000)}}& \texttt{0.790} {\color{black}\texttt{(+0.000)}} & \texttt{0.588} {\color{black}\texttt{(+0.000)}} \\
+avg & no & resnet18 & \texttt{0.207} {\color{red}\texttt{(-0.001)}} & \texttt{0.838} {\color{red}\texttt{(+0.048)}} & \texttt{0.559} {\color{red}\texttt{(-0.029)}} \\
+avg & yes & resnet18 & \texttt{0.207} {\color{green}\texttt{(+0.000)}} & \texttt{0.824} {\color{red}\texttt{(+0.034)}} & \texttt{0.567} {\color{red}\texttt{(-0.022)}} \\
+ref & no & resnet18 & \texttt{0.199} {\color{red}\texttt{(-0.008)}} & \texttt{0.818} {\color{red}\texttt{(+0.028)}} & \texttt{0.568} {\color{red}\texttt{(-0.021)}} \\
+ref & yes & resnet18 & \texttt{0.201} {\color{red}\texttt{(-0.007)}} & \texttt{0.813} {\color{red}\texttt{(+0.023)}} & \texttt{0.572} {\color{red}\texttt{(-0.017)}} \\
+avg & no & resnet34 & \texttt{0.210} {\color{green}\texttt{(+0.003)}} & \texttt{0.787} {\color{green}\texttt{(-0.003)}} & \texttt{0.588} {\color{red}\texttt{(-0.001)}} \\
+avg & yes & resnet34 & \texttt{0.209} {\color{green}\texttt{(+0.002)}} & \texttt{0.788} {\color{green}\texttt{(-0.002)}} & \texttt{0.592} {\color{green}\texttt{(+0.004)}} \\
+ref & no & resnet34 & \texttt{0.194} {\color{red}\texttt{(-0.013)}} & \texttt{0.805} {\color{red}\texttt{(+0.015)}} & \texttt{0.570} {\color{red}\texttt{(-0.018)}} \\
+ref & yes & resnet34 & \texttt{0.196} {\color{red}\texttt{(-0.011)}} & \texttt{0.801} {\color{red}\texttt{(+0.010)}} & \texttt{0.572} {\color{red}\texttt{(-0.016)}} \\
+avg & no & resnet50 & \texttt{0.208} {\color{green}\texttt{(+0.001)}} & \texttt{0.803} {\color{red}\texttt{(+0.013)}} & \texttt{0.583} {\color{red}\texttt{(-0.006)}} \\
+avg & yes & resnet50 & \texttt{0.210} {\color{green}\texttt{(+0.003)}} & \texttt{0.797} {\color{red}\texttt{(+0.007)}} & \texttt{0.586} {\color{red}\texttt{(-0.002)}} \\
+ref & no & resnet50 & \texttt{0.204} {\color{red}\texttt{(-0.003)}} & \texttt{0.792} {\color{red}\texttt{(+0.001)}} & \texttt{0.585} {\color{red}\texttt{(-0.003)}} \\
+ref & yes & resnet50 & \texttt{0.208} {\color{green}\texttt{(+0.000)}} & \texttt{0.793} {\color{red}\texttt{(+0.003)}} & \texttt{0.587} {\color{red}\texttt{(-0.001)}} \\
+avg & no & resnet101 & \texttt{0.209} {\color{green}\texttt{(+0.002)}} & \texttt{0.790} {\color{black}\texttt{(-0.000)}} & \texttt{0.591} {\color{green}\texttt{(+0.002)}} \\
+avg & yes & resnet101 & \texttt{0.210} {\color{green}\texttt{(+0.003)}} & \texttt{0.791} {\color{red}\texttt{(+0.001)}} & \texttt{0.590} {\color{green}\texttt{(+0.002)}} \\
+ref & no & resnet101 & \texttt{0.205} {\color{red}\texttt{(-0.002)}} & \texttt{0.802} {\color{red}\texttt{(+0.012)}} & \texttt{0.590} {\color{green}\texttt{(+0.002)}} \\
+ref & yes & resnet101 & \texttt{0.209} {\color{green}\texttt{(+0.002)}} & \texttt{0.794} {\color{red}\texttt{(+0.004)}} & \texttt{0.593} {\color{green}\texttt{(+0.004)}} \\
+avg & no & resnet152 & \texttt{0.208} {\color{green}\texttt{(+0.001)}} & \texttt{0.801} {\color{red}\texttt{(+0.011)}} & \texttt{0.567} {\color{red}\texttt{(-0.021)}} \\
+avg & yes & resnet152 & \texttt{0.207} {\color{green}\texttt{(+0.000)}} & \texttt{0.796} {\color{red}\texttt{(+0.006)}} & \texttt{0.581} {\color{red}\texttt{(-0.007)}} \\
+ref & no & resnet152 & \texttt{0.205} {\color{red}\texttt{(-0.002)}} & \texttt{0.787} {\color{green}\texttt{(-0.003)}} & \texttt{0.586} {\color{red}\texttt{(-0.002)}} \\
+ref & yes & resnet152 & \texttt{0.208} {\color{green}\texttt{(+0.001)}} & \texttt{0.784} {\color{green}\texttt{(-0.007)}} & \texttt{0.594} {\color{green}\texttt{(+0.006)}} \\
+avg & no & vgg16 & \texttt{0.215} {\color{green}\texttt{(+0.008)}} & \texttt{0.889} {\color{red}\texttt{(+0.098)}} & \texttt{0.551} {\color{red}\texttt{(-0.037)}} \\
+avg & yes & vgg16 & \texttt{0.210} {\color{green}\texttt{(+0.003)}} & \texttt{0.808} {\color{red}\texttt{(+0.018)}} & \texttt{0.575} {\color{red}\texttt{(-0.013)}} \\
+ref & no & vgg16 & \texttt{0.214} {\color{green}\texttt{(+0.007)}} & \texttt{0.820} {\color{red}\texttt{(+0.029)}} & \texttt{0.547} {\color{red}\texttt{(-0.041)}} \\
+ref & yes & vgg16 & \texttt{0.215} {\color{green}\texttt{(+0.008)}} & \texttt{0.805} {\color{red}\texttt{(+0.014)}} & \texttt{0.580} {\color{red}\texttt{(-0.008)}} \\
+avg & no & vgg19 & \texttt{0.209} {\color{green}\texttt{(+0.002)}} & \texttt{0.790} {\color{black}\texttt{(+0.000)}} & \texttt{0.586} {\color{red}\texttt{(-0.002)}} \\
+avg & yes & vgg19 & \texttt{0.209} {\color{green}\texttt{(+0.001)}} & \texttt{0.789} {\color{green}\texttt{(-0.001)}} & \texttt{0.589} {\color{green}\texttt{(+0.000)}} \\
+ref & no & vgg19 & \texttt{0.213} {\color{green}\texttt{(+0.006)}} & \texttt{0.831} {\color{red}\texttt{(+0.041)}} & \texttt{0.557} {\color{red}\texttt{(-0.031)}} \\
+ref & yes & vgg19 & \texttt{0.213} {\color{green}\texttt{(+0.006)}} & \texttt{0.804} {\color{red}\texttt{(+0.013)}} & \texttt{0.579} {\color{red}\texttt{(-0.009)}} \\
+avg & no & clip & \texttt{0.198} {\color{red}\texttt{(-0.009)}} & \texttt{0.792} {\color{red}\texttt{(+0.002)}} & \texttt{0.546} {\color{red}\texttt{(-0.043)}} \\
+avg & yes & clip & \texttt{0.199} {\color{red}\texttt{(-0.008)}} & \texttt{0.793} {\color{red}\texttt{(+0.003)}} & \texttt{0.544} {\color{red}\texttt{(-0.045)}} \\
+ref & no & clip & \texttt{0.187} {\color{red}\texttt{(-0.020)}} & \texttt{0.795} {\color{red}\texttt{(+0.004)}} & \texttt{0.595} {\color{green}\texttt{(+0.007)}} \\
+ref & yes & clip & \texttt{0.187} {\color{red}\texttt{(-0.020)}} & \texttt{0.800} {\color{red}\texttt{(+0.009)}} & \texttt{0.599} {\color{green}\texttt{(+0.011)}} \\
+\hline
+\end{tabular}
