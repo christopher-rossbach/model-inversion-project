@@ -1,39 +1,47 @@
 \begin{tabular}{|l|l|l|c|c|c|c|c|}
 \hline
-Type & ReLU & $h$ & SSIM $\uparrow$ & LPIPS VGG $\downarrow$ & LPIPS Alex $\downarrow$ & CLIP cos sim $\uparrow$  & \# Runs \\
+Type & ReLU & $h$ & SSIM $\uparrow$ & LPIPS VGG $\downarrow$ & LPIPS Alex $\downarrow$ & CLIP cos sim $\uparrow$ & \# Runs \\
 \hline
-baseline & -- & none & \texttt{0.120} {\color{black}\texttt{(+0.000)}}& \texttt{0.770} {\color{black}\texttt{(+0.000)}} & \texttt{0.785} {\color{black}\texttt{(+0.000)}} & \texttt{0.671} {\color{black}\texttt{(+0.000)}} & \texttt{4}\\
-avg & no & rn18 & \texttt{0.171} {\color{green}\texttt{(+0.052)}} & \texttt{0.822} {\color{red}\texttt{(+0.052)}} & \texttt{0.811} {\color{red}\texttt{(+0.026)}} & \texttt{0.589} {\color{red}\texttt{(-0.081)}} & \texttt{8}\\
-avg & yes & rn18 & \texttt{0.171} {\color{green}\texttt{(+0.052)}} & \texttt{0.800} {\color{red}\texttt{(+0.030)}} & \texttt{0.802} {\color{red}\texttt{(+0.017)}} & \texttt{0.600} {\color{red}\texttt{(-0.070)}} & \texttt{8}\\
-ref & no & rn18 & \texttt{0.088} {\color{red}\texttt{(-0.032)}} & \texttt{0.814} {\color{red}\texttt{(+0.043)}} & \texttt{0.829} {\color{red}\texttt{(+0.044)}} & \texttt{0.647} {\color{red}\texttt{(-0.024)}} & \texttt{1}\\
-ref & yes & rn18 & \texttt{0.085} {\color{red}\texttt{(-0.035)}} & \texttt{0.803} {\color{red}\texttt{(+0.033)}} & \texttt{0.826} {\color{red}\texttt{(+0.041)}} & \texttt{0.641} {\color{red}\texttt{(-0.030)}} & \texttt{1}\\
-avg & no & rn34 & \texttt{0.171} {\color{green}\texttt{(+0.051)}} & \texttt{0.804} {\color{red}\texttt{(+0.034)}} & \texttt{0.801} {\color{red}\texttt{(+0.017)}} & \texttt{0.570} {\color{red}\texttt{(-0.100)}} & \texttt{8}\\
-avg & yes & rn34 & \texttt{0.171} {\color{green}\texttt{(+0.052)}} & \texttt{0.795} {\color{red}\texttt{(+0.024)}} & \texttt{0.796} {\color{red}\texttt{(+0.011)}} & \texttt{0.577} {\color{red}\texttt{(-0.094)}} & \texttt{8}\\
-ref & no & rn34 & \texttt{0.084} {\color{red}\texttt{(-0.036)}} & \texttt{0.792} {\color{red}\texttt{(+0.022)}} & \texttt{0.826} {\color{red}\texttt{(+0.041)}} & \texttt{0.661} {\color{red}\texttt{(-0.010)}} & \texttt{1}\\
-ref & yes & rn34 & \texttt{0.086} {\color{red}\texttt{(-0.034)}} & \texttt{0.788} {\color{red}\texttt{(+0.018)}} & \texttt{0.819} {\color{red}\texttt{(+0.034)}} & \texttt{0.659} {\color{red}\texttt{(-0.011)}} & \texttt{1}\\
-avg & no & rn50 & \texttt{0.174} {\color{green}\texttt{(+0.054)}} & \texttt{0.770} {\color{black}\texttt{(+0.000)}} & \texttt{0.794} {\color{red}\texttt{(+0.010)}} & \texttt{0.627} {\color{red}\texttt{(-0.044)}} & \texttt{8}\\
-avg & yes & rn50 & \texttt{0.174} {\color{green}\texttt{(+0.054)}} & \texttt{0.762} {\color{green}\texttt{(-0.008)}} & \texttt{0.789} {\color{red}\texttt{(+0.005)}} & \texttt{0.627} {\color{red}\texttt{(-0.043)}} & \texttt{8}\\
-ref & no & rn50 & \texttt{0.089} {\color{red}\texttt{(-0.031)}} & \texttt{0.765} {\color{green}\texttt{(-0.005)}} & \texttt{0.814} {\color{red}\texttt{(+0.029)}} & \texttt{0.654} {\color{red}\texttt{(-0.017)}} & \texttt{1}\\
-ref & yes & rn50 & \texttt{0.090} {\color{red}\texttt{(-0.030)}} & \texttt{0.761} {\color{green}\texttt{(-0.009)}} & \texttt{0.806} {\color{red}\texttt{(+0.021)}} & \texttt{0.643} {\color{red}\texttt{(-0.028)}} & \texttt{1}\\
-avg & no & rn101 & \texttt{0.171} {\color{green}\texttt{(+0.051)}} & \texttt{0.768} {\color{black}\texttt{(-0.002)}} & \texttt{0.780} {\color{green}\texttt{(-0.005)}} & \texttt{0.618} {\color{red}\texttt{(-0.052)}} & \texttt{8}\\
-avg & yes & rn101 & \texttt{0.172} {\color{green}\texttt{(+0.052)}} & \texttt{0.760} {\color{green}\texttt{(-0.010)}} & \texttt{0.776} {\color{green}\texttt{(-0.009)}} & \texttt{0.625} {\color{red}\texttt{(-0.046)}} & \texttt{8}\\
-ref & no & rn101 & \texttt{0.087} {\color{red}\texttt{(-0.033)}} & \texttt{0.770} {\color{black}\texttt{(-0.000)}} & \texttt{0.822} {\color{red}\texttt{(+0.037)}} & \texttt{0.651} {\color{red}\texttt{(-0.019)}} & \texttt{1}\\
-ref & yes & rn101 & \texttt{0.089} {\color{red}\texttt{(-0.031)}} & \texttt{0.764} {\color{green}\texttt{(-0.007)}} & \texttt{0.809} {\color{red}\texttt{(+0.025)}} & \texttt{0.658} {\color{red}\texttt{(-0.012)}} & \texttt{1}\\
-avg & no & rn152 & \texttt{0.174} {\color{green}\texttt{(+0.054)}} & \texttt{0.765} {\color{green}\texttt{(-0.005)}} & \texttt{0.782} {\color{green}\texttt{(-0.003)}} & \texttt{0.611} {\color{red}\texttt{(-0.060)}} & \texttt{8}\\
-avg & yes & rn152 & \texttt{0.173} {\color{green}\texttt{(+0.053)}} & \texttt{0.761} {\color{green}\texttt{(-0.009)}} & \texttt{0.780} {\color{green}\texttt{(-0.005)}} & \texttt{0.624} {\color{red}\texttt{(-0.047)}} & \texttt{8}\\
-ref & no & rn152 & \texttt{0.090} {\color{red}\texttt{(-0.030)}} & \texttt{0.755} {\color{green}\texttt{(-0.015)}} & \texttt{0.804} {\color{red}\texttt{(+0.019)}} & \texttt{0.668} {\color{black}\texttt{(-0.002)}} & \texttt{1}\\
-ref & yes & rn152 & \texttt{0.091} {\color{red}\texttt{(-0.029)}} & \texttt{0.758} {\color{green}\texttt{(-0.012)}} & \texttt{0.803} {\color{red}\texttt{(+0.019)}} & \texttt{0.646} {\color{red}\texttt{(-0.025)}} & \texttt{1}\\
-avg & no & vgg16 & \texttt{0.180} {\color{green}\texttt{(+0.060)}} & \texttt{0.870} {\color{red}\texttt{(+0.100)}} & \texttt{0.850} {\color{red}\texttt{(+0.065)}} & \texttt{0.560} {\color{red}\texttt{(-0.110)}} & \texttt{8}\\
-avg & yes & vgg16 & \texttt{0.175} {\color{green}\texttt{(+0.055)}} & \texttt{0.780} {\color{red}\texttt{(+0.010)}} & \texttt{0.789} {\color{red}\texttt{(+0.004)}} & \texttt{0.615} {\color{red}\texttt{(-0.055)}} & \texttt{8}\\
-ref & no & vgg16 & \texttt{0.094} {\color{red}\texttt{(-0.026)}} & \texttt{0.808} {\color{red}\texttt{(+0.038)}} & \texttt{0.835} {\color{red}\texttt{(+0.050)}} & \texttt{0.623} {\color{red}\texttt{(-0.048)}} & \texttt{1}\\
-ref & yes & vgg16 & \texttt{0.093} {\color{red}\texttt{(-0.027)}} & \texttt{0.778} {\color{red}\texttt{(+0.008)}} & \texttt{0.807} {\color{red}\texttt{(+0.022)}} & \texttt{0.641} {\color{red}\texttt{(-0.030)}} & \texttt{1}\\
-avg & no & vgg19 & \texttt{0.170} {\color{green}\texttt{(+0.050)}} & \texttt{0.848} {\color{red}\texttt{(+0.078)}} & \texttt{0.864} {\color{red}\texttt{(+0.080)}} & \texttt{0.555} {\color{red}\texttt{(-0.116)}} & \texttt{8}\\
-avg & yes & vgg19 & \texttt{0.174} {\color{green}\texttt{(+0.054)}} & \texttt{0.764} {\color{green}\texttt{(-0.006)}} & \texttt{0.779} {\color{green}\texttt{(-0.005)}} & \texttt{0.616} {\color{red}\texttt{(-0.055)}} & \texttt{8}\\
-ref & no & vgg19 & \texttt{0.083} {\color{red}\texttt{(-0.037)}} & \texttt{0.831} {\color{red}\texttt{(+0.061)}} & \texttt{0.837} {\color{red}\texttt{(+0.053)}} & \texttt{0.617} {\color{red}\texttt{(-0.053)}} & \texttt{1}\\
-ref & yes & vgg19 & \texttt{0.087} {\color{red}\texttt{(-0.033)}} & \texttt{0.792} {\color{red}\texttt{(+0.022)}} & \texttt{0.817} {\color{red}\texttt{(+0.032)}} & \texttt{0.632} {\color{red}\texttt{(-0.039)}} & \texttt{1}\\
-avg & no & clip & \texttt{0.168} {\color{green}\texttt{(+0.048)}} & \texttt{0.764} {\color{green}\texttt{(-0.006)}} & \texttt{0.796} {\color{red}\texttt{(+0.012)}} & \texttt{0.572} {\color{red}\texttt{(-0.099)}} & \texttt{8}\\
-avg & yes & clip & \texttt{0.167} {\color{green}\texttt{(+0.048)}} & \texttt{0.764} {\color{green}\texttt{(-0.006)}} & \texttt{0.797} {\color{red}\texttt{(+0.012)}} & \texttt{0.569} {\color{red}\texttt{(-0.102)}} & \texttt{8}\\
-ref & no & clip & \texttt{0.098} {\color{red}\texttt{(-0.022)}} & \texttt{0.814} {\color{red}\texttt{(+0.044)}} & \texttt{0.843} {\color{red}\texttt{(+0.058)}} & \texttt{0.693} {\color{green}\texttt{(+0.023)}} & \texttt{2}\\
-ref & yes & clip & \texttt{0.103} {\color{red}\texttt{(-0.017)}} & \texttt{0.794} {\color{red}\texttt{(+0.024)}} & \texttt{0.793} {\color{red}\texttt{(+0.008)}} & \texttt{0.678} {\color{green}\texttt{(+0.007)}} & \texttt{2}\\
+\rowcolor{verylightgray}baseline & yes & -- & \texttt{0.174 {\color{black}(+0.000)}} & \texttt{0.778 {\color{black}(+0.000)}} & \texttt{0.752 {\color{black}(+0.000)}} & \texttt{0.643 {\color{black}(+0.000)}} & \texttt{16} \\
+\hline
+avg & yes & rn18 & \texttt{0.171 {\color{red}(-0.003)}} & \texttt{0.802 {\color{red}(+0.023)}} & \texttt{0.800 {\color{red}(+0.048)}} & \texttt{0.600 {\color{red}(-0.043)}} & \texttt{8} \\
+avg & no & rn18 & \texttt{0.171 {\color{red}(-0.003)}} & \texttt{0.811 {\color{red}(+0.032)}} & \texttt{0.822 {\color{red}(+0.070)}} & \texttt{0.590 {\color{red}(-0.053)}} & \texttt{8} \\
+ref & yes & rn18 & \texttt{0.168 {\color{red}(-0.006)}} & \texttt{0.789 {\color{red}(+0.011)}} & \texttt{0.780 {\color{red}(+0.028)}} & \texttt{0.614 {\color{red}(-0.029)}} & \texttt{8} \\
+ref & no & rn18 & \texttt{0.167 {\color{red}(-0.007)}} & \texttt{0.794 {\color{red}(+0.016)}} & \texttt{0.792 {\color{red}(+0.041)}} & \texttt{0.604 {\color{red}(-0.039)}} & \texttt{8} \\
+\hline
+avg & yes & rn34 & \texttt{0.171 {\color{red}(-0.003)}} & \texttt{0.796 {\color{red}(+0.018)}} & \texttt{0.794 {\color{red}(+0.042)}} & \texttt{0.577 {\color{red}(-0.066)}} & \texttt{8} \\
+avg & no & rn34 & \texttt{0.171 {\color{red}(-0.003)}} & \texttt{0.801 {\color{red}(+0.023)}} & \texttt{0.803 {\color{red}(+0.051)}} & \texttt{0.570 {\color{red}(-0.073)}} & \texttt{8} \\
+ref & yes & rn34 & \texttt{0.167 {\color{red}(-0.007)}} & \texttt{0.784 {\color{red}(+0.006)}} & \texttt{0.772 {\color{red}(+0.020)}} & \texttt{0.625 {\color{red}(-0.017)}} & \texttt{8} \\
+ref & no & rn34 & \texttt{0.165 {\color{red}(-0.009)}} & \texttt{0.789 {\color{red}(+0.011)}} & \texttt{0.780 {\color{red}(+0.028)}} & \texttt{0.616 {\color{red}(-0.027)}} & \texttt{8} \\
+\hline
+avg & yes & rn50 & \texttt{0.174 {\color{black}(-0.000)}} & \texttt{0.790 {\color{red}(+0.011)}} & \texttt{0.763 {\color{red}(+0.011)}} & \texttt{0.627 {\color{red}(-0.015)}} & \texttt{8} \\
+avg & no & rn50 & \texttt{0.174 {\color{black}(+0.000)}} & \texttt{0.794 {\color{red}(+0.016)}} & \texttt{0.770 {\color{red}(+0.018)}} & \texttt{0.626 {\color{red}(-0.016)}} & \texttt{8} \\
+ref & yes & rn50 & \texttt{0.173 {\color{red}(-0.002)}} & \texttt{0.781 {\color{red}(+0.003)}} & \texttt{0.754 {\color{red}(+0.002)}} & \texttt{0.636 {\color{red}(-0.007)}} & \texttt{8} \\
+ref & no & rn50 & \texttt{0.170 {\color{red}(-0.005)}} & \texttt{0.784 {\color{red}(+0.006)}} & \texttt{0.757 {\color{red}(+0.005)}} & \texttt{0.630 {\color{red}(-0.012)}} & \texttt{8} \\
+\hline
+avg & yes & rn101 & \texttt{0.172 {\color{red}(-0.002)}} & \texttt{0.776 {\color{green}(-0.003)}} & \texttt{0.760 {\color{red}(+0.008)}} & \texttt{0.625 {\color{red}(-0.018)}} & \texttt{8} \\
+avg & no & rn101 & \texttt{0.172 {\color{red}(-0.003)}} & \texttt{0.780 {\color{red}(+0.001)}} & \texttt{0.768 {\color{red}(+0.016)}} & \texttt{0.619 {\color{red}(-0.024)}} & \texttt{8} \\
+ref & yes & rn101 & \texttt{0.174 {\color{black}(+0.000)}} & \texttt{0.778 {\color{black}(-0.000)}} & \texttt{0.753 {\color{red}(+0.001)}} & \texttt{0.643 {\color{black}(+0.000)}} & \texttt{8} \\
+ref & no & rn101 & \texttt{0.174 {\color{black}(+0.000)}} & \texttt{0.784 {\color{red}(+0.006)}} & \texttt{0.760 {\color{red}(+0.008)}} & \texttt{0.640 {\color{red}(-0.002)}} & \texttt{8} \\
+\hline
+avg & yes & rn152 & \texttt{0.173 {\color{red}(-0.001)}} & \texttt{0.780 {\color{red}(+0.002)}} & \texttt{0.761 {\color{red}(+0.009)}} & \texttt{0.624 {\color{red}(-0.019)}} & \texttt{8} \\
+avg & no & rn152 & \texttt{0.174 {\color{red}(-0.001)}} & \texttt{0.782 {\color{red}(+0.003)}} & \texttt{0.765 {\color{red}(+0.013)}} & \texttt{0.611 {\color{red}(-0.031)}} & \texttt{8} \\
+ref & yes & rn152 & \texttt{0.171 {\color{red}(-0.003)}} & \texttt{0.781 {\color{red}(+0.003)}} & \texttt{0.756 {\color{red}(+0.004)}} & \texttt{0.641 {\color{red}(-0.001)}} & \texttt{8} \\
+ref & no & rn152 & \texttt{0.171 {\color{red}(-0.003)}} & \texttt{0.782 {\color{red}(+0.004)}} & \texttt{0.755 {\color{red}(+0.003)}} & \texttt{0.641 {\color{red}(-0.002)}} & \texttt{8} \\
+\hline
+avg & yes & vgg16 & \texttt{0.174 {\color{black}(+0.000)}} & \texttt{0.789 {\color{red}(+0.010)}} & \texttt{0.780 {\color{red}(+0.028)}} & \texttt{0.615 {\color{red}(-0.027)}} & \texttt{8} \\
+avg & no & vgg16 & \texttt{0.180 {\color{green}(+0.005)}} & \texttt{0.850 {\color{red}(+0.071)}} & \texttt{0.870 {\color{red}(+0.118)}} & \texttt{0.560 {\color{red}(-0.083)}} & \texttt{8} \\
+ref & yes & vgg16 & \texttt{0.179 {\color{green}(+0.005)}} & \texttt{0.787 {\color{red}(+0.008)}} & \texttt{0.770 {\color{red}(+0.018)}} & \texttt{0.625 {\color{red}(-0.018)}} & \texttt{8} \\
+ref & no & vgg16 & \texttt{0.176 {\color{green}(+0.002)}} & \texttt{0.816 {\color{red}(+0.038)}} & \texttt{0.802 {\color{red}(+0.050)}} & \texttt{0.569 {\color{red}(-0.074)}} & \texttt{8} \\
+\hline
+avg & yes & vgg19 & \texttt{0.174 {\color{black}(-0.000)}} & \texttt{0.779 {\color{red}(+0.001)}} & \texttt{0.763 {\color{red}(+0.011)}} & \texttt{0.616 {\color{red}(-0.027)}} & \texttt{8} \\
+avg & no & vgg19 & \texttt{0.171 {\color{red}(-0.004)}} & \texttt{0.864 {\color{red}(+0.086)}} & \texttt{0.848 {\color{red}(+0.096)}} & \texttt{0.555 {\color{red}(-0.088)}} & \texttt{8} \\
+ref & yes & vgg19 & \texttt{0.177 {\color{green}(+0.003)}} & \texttt{0.782 {\color{red}(+0.003)}} & \texttt{0.770 {\color{red}(+0.018)}} & \texttt{0.633 {\color{red}(-0.010)}} & \texttt{8} \\
+ref & no & vgg19 & \texttt{0.176 {\color{green}(+0.002)}} & \texttt{0.812 {\color{red}(+0.034)}} & \texttt{0.810 {\color{red}(+0.058)}} & \texttt{0.600 {\color{red}(-0.043)}} & \texttt{8} \\
+\hline
+avg & yes & clip & \texttt{0.167 {\color{red}(-0.007)}} & \texttt{0.797 {\color{red}(+0.018)}} & \texttt{0.764 {\color{red}(+0.012)}} & \texttt{0.568 {\color{red}(-0.074)}} & \texttt{8} \\
+avg & no & clip & \texttt{0.168 {\color{red}(-0.007)}} & \texttt{0.797 {\color{red}(+0.018)}} & \texttt{0.764 {\color{red}(+0.012)}} & \texttt{0.572 {\color{red}(-0.071)}} & \texttt{8} \\
+ref & yes & clip & \texttt{0.162 {\color{red}(-0.012)}} & \texttt{0.786 {\color{red}(+0.008)}} & \texttt{0.766 {\color{red}(+0.014)}} & \texttt{0.654 {\color{green}(+0.011)}} & \texttt{8} \\
+ref & no & clip & \texttt{0.162 {\color{red}(-0.013)}} & \texttt{0.786 {\color{red}(+0.008)}} & \texttt{0.768 {\color{red}(+0.016)}} & \texttt{0.662 {\color{green}(+0.019)}} & \texttt{8} \\
 \hline
 \end{tabular}

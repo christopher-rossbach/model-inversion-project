@@ -1,0 +1,30 @@
+\begin{tabular}{|l|l|l|c|c|c|c|c|}
+\hline
+Type & ReLU & $h$ & SSIM $\uparrow$ & LPIPS VGG $\downarrow$ & LPIPS Alex $\downarrow$ & CLIP cos sim $\uparrow$ & \# Runs \\
+\hline
+avg & yes & rn18 & \texttt{0.171 {\color{red}(-0.003)}} & \texttt{0.802 {\color{red}(+0.012)}} & \texttt{0.800 {\color{red}(+0.037)}} & \texttt{0.600 {\color{red}(-0.027)}} & \texttt{8} \\
+avg & no & rn18 & \texttt{0.171 {\color{red}(-0.003)}} & \texttt{0.811 {\color{red}(+0.016)}} & \texttt{0.822 {\color{red}(+0.051)}} & \texttt{0.590 {\color{red}(-0.037)}} & \texttt{8} \\
+ref & yes & rn18 & \texttt{0.168 {\color{red}(-0.005)}} & \texttt{0.789 {\color{red}(+0.008)}} & \texttt{0.780 {\color{red}(+0.026)}} & \texttt{0.614 {\color{red}(-0.022)}} & \texttt{8} \\
+ref & no & rn18 & \texttt{0.167 {\color{red}(-0.002)}} & \texttt{0.794 {\color{red}(+0.010)}} & \texttt{0.792 {\color{red}(+0.035)}} & \texttt{0.604 {\color{red}(-0.027)}} & \texttt{8} \\
+\hline
+avg & yes & rn34 & \texttt{0.171 {\color{red}(-0.003)}} & \texttt{0.796 {\color{red}(+0.006)}} & \texttt{0.794 {\color{red}(+0.032)}} & \texttt{0.577 {\color{red}(-0.050)}} & \texttt{8} \\
+avg & no & rn34 & \texttt{0.171 {\color{red}(-0.003)}} & \texttt{0.801 {\color{red}(+0.007)}} & \texttt{0.803 {\color{red}(+0.033)}} & \texttt{0.570 {\color{red}(-0.056)}} & \texttt{8} \\
+ref & yes & rn34 & \texttt{0.167 {\color{red}(-0.006)}} & \texttt{0.784 {\color{red}(+0.003)}} & \texttt{0.772 {\color{red}(+0.018)}} & \texttt{0.625 {\color{red}(-0.010)}} & \texttt{8} \\
+ref & no & rn34 & \texttt{0.165 {\color{red}(-0.004)}} & \texttt{0.789 {\color{red}(+0.005)}} & \texttt{0.780 {\color{red}(+0.023)}} & \texttt{0.616 {\color{red}(-0.015)}} & \texttt{8} \\
+\hline
+\rowcolor{verylightgray}avg & yes & rn50 & \texttt{0.174 {\color{black}(+0.000)}} & \texttt{0.790 {\color{black}(+0.000)}} & \texttt{0.763 {\color{black}(+0.000)}} & \texttt{0.627 {\color{black}(+0.000)}} & \texttt{8} \\
+\rowcolor{verylightgray}avg & no & rn50 & \texttt{0.174 {\color{black}(+0.000)}} & \texttt{0.794 {\color{black}(+0.000)}} & \texttt{0.770 {\color{black}(+0.000)}} & \texttt{0.626 {\color{black}(+0.000)}} & \texttt{8} \\
+\rowcolor{verylightgray}ref & yes & rn50 & \texttt{0.173 {\color{black}(+0.000)}} & \texttt{0.781 {\color{black}(+0.000)}} & \texttt{0.754 {\color{black}(+0.000)}} & \texttt{0.636 {\color{black}(+0.000)}} & \texttt{8} \\
+\rowcolor{verylightgray}ref & no & rn50 & \texttt{0.170 {\color{black}(+0.000)}} & \texttt{0.784 {\color{black}(+0.000)}} & \texttt{0.757 {\color{black}(+0.000)}} & \texttt{0.630 {\color{black}(+0.000)}} & \texttt{8} \\
+\hline
+avg & yes & rn101 & \texttt{0.172 {\color{red}(-0.002)}} & \texttt{0.776 {\color{green}(-0.014)}} & \texttt{0.760 {\color{green}(-0.002)}} & \texttt{0.625 {\color{red}(-0.002)}} & \texttt{8} \\
+avg & no & rn101 & \texttt{0.172 {\color{red}(-0.003)}} & \texttt{0.780 {\color{green}(-0.014)}} & \texttt{0.768 {\color{green}(-0.003)}} & \texttt{0.619 {\color{red}(-0.008)}} & \texttt{8} \\
+ref & yes & rn101 & \texttt{0.174 {\color{green}(+0.002)}} & \texttt{0.778 {\color{green}(-0.003)}} & \texttt{0.753 {\color{green}(-0.001)}} & \texttt{0.643 {\color{green}(+0.007)}} & \texttt{8} \\
+ref & no & rn101 & \texttt{0.174 {\color{green}(+0.005)}} & \texttt{0.784 {\color{black}(+0.000)}} & \texttt{0.760 {\color{red}(+0.003)}} & \texttt{0.640 {\color{green}(+0.010)}} & \texttt{8} \\
+\hline
+avg & yes & rn152 & \texttt{0.173 {\color{red}(-0.001)}} & \texttt{0.780 {\color{green}(-0.010)}} & \texttt{0.761 {\color{green}(-0.002)}} & \texttt{0.624 {\color{red}(-0.003)}} & \texttt{8} \\
+avg & no & rn152 & \texttt{0.174 {\color{red}(-0.001)}} & \texttt{0.782 {\color{green}(-0.013)}} & \texttt{0.765 {\color{green}(-0.006)}} & \texttt{0.611 {\color{red}(-0.015)}} & \texttt{8} \\
+ref & yes & rn152 & \texttt{0.171 {\color{red}(-0.002)}} & \texttt{0.781 {\color{black}(-0.000)}} & \texttt{0.756 {\color{red}(+0.002)}} & \texttt{0.641 {\color{green}(+0.006)}} & \texttt{8} \\
+ref & no & rn152 & \texttt{0.171 {\color{green}(+0.002)}} & \texttt{0.782 {\color{green}(-0.002)}} & \texttt{0.755 {\color{green}(-0.002)}} & \texttt{0.641 {\color{green}(+0.010)}} & \texttt{8} \\
+\hline
+\end{tabular}

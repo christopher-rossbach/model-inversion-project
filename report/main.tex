@@ -5,8 +5,10 @@
 \usepackage{amssymb}
 \usepackage{hyperref}
 \usepackage{geometry}
+\usepackage[table]{xcolor}
 \usepackage{cite}
-\usepackage{xcolor}
+
+\definecolor{verylightgray}{gray}{0.85}
 
 \geometry{margin=1in}
 
@@ -94,7 +96,8 @@ g_{\alpha,\beta}(x) = \text{relu}(x - \alpha) + \beta\cdot\text{relu}(x - \alpha
 $$
 This quadratic dead zone penalty function allows for punishment-free variation in the interval $\lbrack-\alpha,\alpha\rbrack$ and (for big enough $\beta$) limits the total variation to be close to $\alpha$.
 The use of this penalty function makes sure, that the this regularization term does not loose importance when adding additional terms to the objective function of the optimization.
-A parameter selection of $\alpha = 0.3$ and $\beta = 10$ was found to yield good results in practice.%TODO \footnote{We could pin this to the avg value of e.g. ImageNet Data.}
+A parameter selection of $\alpha = 0.3$ and $\beta = 10$ was found to yield good results in practice.
+%TODO \footnote{We could pin this to the avg value of e.g. ImageNet Data.}
 
 \subsection{Impact of Inverted Model}
 The reconstruction method described in Section~\ref{base_method} yields visibly different results when using different backbones $f$.
@@ -180,7 +183,8 @@ For $h$ we explored different ResNet backbones, ResNet-18, ResNet-34, ResNet-50,
 For all of them (except clip) we used a model pretrained on ImageNet without its classification layer and also performed the experiments on the original and the version without the last ReLU activation (denoted by a -nrl suffix).
 For the CLIP model, we used an OpenAI pretrained version as presented in~\cite{radfordLearningTransferableVisual2021}.
 As metrics for the evaluation of the reconstruction quality we used the structural similarity index measure (SSIM)~\cite{zhouwangImageQualityAssessment2004}, the learned perceptual image patch similarity (LPIPS)~\cite{zhangUnreasonableEffectivenessDeep2018} as well as the cosine similarity based distance to the ground truth CLIP embedding of the image ($\mathcal{L}_{\text{clip}}(\hat x, \text{clip}(x))$).
-The SSIM value is supplemented by LPIPS, which is used to measure perceptual similarity, as a human viewer would perceive it and by the CLIP loss, which measures how well the reconstruction captures the semantic content of the original image.%TODO \footnote{This needs a reference.}
+The SSIM value is supplemented by LPIPS, which is used to measure perceptual similarity, as a human viewer would perceive it and by the CLIP loss, which measures how well the reconstruction captures the semantic content of the original image.
+%TODO \footnote{This needs a reference.}
 The results can be seen in table~\ref{tab:results_comparison}.
 
 \begin{table*}[ht]
@@ -194,6 +198,50 @@ The results can be seen in table~\ref{tab:results_comparison}.
             For each of the images 16 reconstructions were performed and their metrics were averaged.
         }
         \label{tab:results_comparison}
+\end{table*}
+
+\begin{table*}[ht]
+    \centering
+        \input{figures/experiments_table_relu}
+        \caption{
+            Comparison of reconstruction quality with and without the last ReLU activation.
+            The differences are calculated with respect to the same backbone and $y_h$ configuration so that only the effect of the removal of the ReLU is shown.
+            Reference lines are indicated by a gray background.
+        }
+        \label{tab:results_comparison_relu}
+\end{table*}
+
+\begin{table*}[ht]
+    \centering
+        \input{figures/experiments_table_avg}
+        \caption{
+            Comparison of different methods of calculating $y_h$ (avg vs ref).
+            The differences are calculated with respect to the same backbone and relu configuration so that only the effect of the method of calculating $y_h$ is shown.
+            Reference lines are indicated by a gray background.
+        }
+        \label{tab:results_comparison_avg}
+\end{table*}
+
+\begin{table*}[ht]
+    \centering
+        \input{figures/experiments_table_rn50}
+        \caption{
+            Comparison of different depths of ResNets.
+            ResNet-50 is chosen as the reference value for the differences.
+            Reference lines are indicated by a gray background.
+        }
+        \label{tab:results_comparison_rn50}
+\end{table*}
+
+\begin{table*}[ht]
+    \centering
+        \input{figures/experiments_table_vgg16}
+        \caption{
+            Comparison of different depths of VGGs.
+            VGG-16 is chosen as the reference value for the differences.
+            Reference lines are indicated by a gray background.
+        }
+        \label{tab:results_comparison_vgg16}
 \end{table*}
 
 The calculation of $y_h$ was performed by using $m=16$ parallel reconstructions and in the two different ways described in Section~\ref{combining_backbones}:
