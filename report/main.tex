@@ -213,17 +213,6 @@ The results can be seen in table~\ref{tab:results_comparison}.
 
 \begin{table*}[ht]
     \centering
-        \input{figures/experiments_table_avg}
-        \caption{
-            Comparison of different methods of calculating $y_h$ (avg vs ref).
-            The differences are calculated with respect to the same backbone and relu configuration so that only the effect of the method of calculating $y_h$ is shown.
-            Reference lines are indicated by a gray background.
-        }
-        \label{tab:results_comparison_avg}
-\end{table*}
-
-\begin{table*}[ht]
-    \centering
         \input{figures/experiments_table_rn50}
         \caption{
             Comparison of different depths of ResNets.
@@ -244,8 +233,66 @@ The results can be seen in table~\ref{tab:results_comparison}.
         \label{tab:results_comparison_vgg16}
 \end{table*}
 
+\begin{table*}[ht]
+    \centering
+        \input{figures/experiments_table_avg}
+        \caption{
+            Comparison of different methods of calculating $y_h$ (avg vs ref).
+            The differences are calculated with respect to the same backbone and relu configuration so that only the effect of the method of calculating $y_h$ is shown.
+            Reference lines are indicated by a gray background.
+        }
+        \label{tab:results_comparison_avg}
+\end{table*}
+
+\begin{table*}[ht]
+    \centering
+        \input{figures/experiments_table_04_to_08_recons}
+        \caption{
+        Metrics for 8 parallel reconstructions to calculate $y_h$.
+        The differences are calculated with respect to using 4 parallel reconstructions.
+        }
+        \label{tab:results_comparison_04_to_08_recons}
+\end{table*}
+
+\begin{table*}[ht]
+    \centering
+        \input{figures/experiments_table_08_to_16_recons}
+        \caption{
+        Metrics for 16 parallel reconstructions to calculate $y_h$.
+        The differences are calculated with respect to using 8 parallel reconstructions.
+        }
+        \label{tab:results_comparison_08_to_16_recons}
+\end{table*}
+
 The calculation of $y_h$ was performed by using $m=16$ parallel reconstructions and in the two different ways described in Section~\ref{combining_backbones}:
 We choose $y_h$ to be the average of the current iteration ($y_h^\text{avg}=\overline{h(X^{(t)})}$) or to be a reference vector obtained by independently and previously completed run ($y_h^\text{ref}=\overline{h(X_f)}$).
+\subsection{Influence of the Last ReLU}
+The effect of removing the last ReLU activation can be seen in table~\ref{tab:results_comparison_relu}.
+Despite the rather promising observations in figure~\ref{fig:relu_norelu_distribution_shift}, we observe that removing the last ReLU activation generally hurts the reconstruction quality independent of the metric used.
+
+The reason for this could be that removing the last ReLU activation increases the search space of the optimization problem significantly.
+This could lead to the optimization getting stuck in local minima more often.
+Another reason could be that the last ReLU activation is an important part of the backbone's learned representation and removing it degrades the quality of the features extracted by the backbone.
+This is because during training of the backbone the exact value of below zero activations were not relevant and thus not learned but now they contribute directly to the loss.
+
+\subsection{Choice of Foreign Backbone}
+The choice of the foreign backbone $h$ has a measurable impact on the reconstruction quality.
+We are especially interested in the effect of the depth of the network on the reconstruction quality.
+Within the family of ResNets we observe that increasing the depth of the network generally improves the reconstruction quality as can be seen in table~\ref{tab:results_comparison_rn50}.
+This may be due to the fact that deeper networks are able to capture more complex features and thus provide a more informative guidance during the reconstruction process.
+The same effect can be observed in the family of VGG networks as can be seen in table~\ref{tab:results_comparison_vgg16}.
+
+\subsection{Method of Calculating the Reference Embedding}
+Whether using the average of the current reconstructions or a reference vector from a previous run has significant impact on the reconstruction quality as can be seen in table~\ref{tab:results_comparison_avg}.
+For the perceptual LPIPS metric and the CLIP based metric we observe a significant improvement when using the ref-method.
+This may be due to the fact that in the ref-method the reference vector can be freely developed in a independent run and thus may contain more complex features, while the avg-method pulls the reconstructions towards an average from the beginning of the optimization, which may discourage exploration of more diverse solutions.
+
+On the other hand, the SSIM metric seems to benefit from the avg-method.
+This may be due to the same reason: the avg-method discourages complex features and thus reduce the development of strong structural artifacts that may be penalized by the SSIM metric.
+
+For the best performing backbones (rn152, vgg19, clip (each without modification)) and the ref-method we performed additional experiments to evaluate the effect of the number of parallel reconstructions used to calculate $y_h$.
+Going from 4 to 8 parallel reconstructions yields an improvement for the VGG and CLIP backbones while the ResNet performance degrades as can be seen in table~\ref{tab:results_comparison_04_to_08_recons}
+Doubling the parallel reconstructions again from 8 to 16 continues this trend only partially as can be seen in table~\ref{tab:results_comparison_08_to_16_recons}.
 
 \section{Discussion}
 Interpretation of results, limitations, and potential improvements.
