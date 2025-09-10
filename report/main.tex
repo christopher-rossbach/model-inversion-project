@@ -12,7 +12,7 @@
 
 \geometry{margin=1in}
 
-\title{Improving Model Inversion Attacks Using Additional Backbones}
+\title{Improving Model Inversion Using Additional Backbones}
 \author{Christopher Roßbach \\ FAU-Erlangen-Nürnberg}
 \date{\today}
 
@@ -20,23 +20,24 @@
 
 \maketitle
 \begin{abstract}
-    Model inversion attacks aim to infer sensitive information about input or training data from the outputs or representations of machine learning models.
-    In this work we explore model inversion in the form of reconstructing images from their feature embeddings in a known latent space.
-    We explore the effectiveness of optimization based methods in different latent spaces.
+    Model inversion, also referred to as feature inversion, aims to reconstruct the input of a neural model from the outputs or intermediate representations of the model.
+    In this work, we aim to reconstruct images from their feature embeddings in a known latent space.
+    The task of reconstructing the input in full fidelity is highly ill-posed and requires the incorporation of additional constraints and priors, especially when using deep features of vision models.
+    %TODO add the ref for that \cite{dosovitskiyInvertingVisualRepresentations2016}
+    We explore the effectiveness of optimization based methods in different latent spaces obtained from different vision models.
     Using the discovered findings, we propose a method that leverages the embeddings of multiple reconstruction candidates in foreign latent spaces to improve reconstruction quality.
 \end{abstract}
 
 \section{Introduction}
-Model inversion attacks pose significant risks by reconstructing private information about either training data or model inputs.
+The reconstruction of network inputs from intermediate presentations produced by model can be used to evaluate the privacy risks of sharing such representations.
+Due to the ill-posed nature of the problem, one may expect that the reconstruction of the input is not possible in practice and thus share such representations without caution.
+%TODO rewrite from here
 This report investigates techniques that try to reconstruct the full model input from a latent representation.
 We limit ourselves to the task of image reconstruction from feature embeddings given by a pretrained vision backbone.
 We assume a white-box setting where the attacker has access to the model architecture and parameters as well as the feature embedding of the target image.
 
-We aim to approximate the private image $x^*$ owned by the victim from its embedding $y^* = f(x^*)$ where $f$ is a pretrained known backbone network and $y^*$ is the embedding known to the attacker (either leaked or purposely shared).
-
-\section{Related Work}
-Brief overview of previous research on model inversion attacks and defense mechanisms.
-
+We aim to approximate the private image $x^*$ owned by the victim from its embedding $y^* = f(x^*)$.
+We assume that both, the network $f$ and the embedding $y^*$ are known to the attacker (either leaked or purposely shared).
 
 \section{Methodology}
 We try to reconstruct the private image from its embedding through an optimization process.
@@ -248,7 +249,20 @@ The calculation of $y_h$ was performed by using $m=16$ parallel reconstructions 
 We choose $y_h$ to be the average of the current iteration ($y_h^\text{avg}=\overline{h(X^{(t)})}$) or to be a reference vector obtained by independently and previously completed run ($y_h^\text{ref}=\overline{h(X_f)}$).
 
 \section{Discussion}
-Interpretation of results, limitations, and potential improvements.
+\subsection{Results}
+TODO: Discuss results in tables~\ref{tab:results_comparison},~\ref{tab:results_comparison_relu},~\ref{tab:results_comparison_avg},~\ref{tab:results_comparison_rn50} and~\ref{tab:results_comparison_vgg16}.
+Notes so far:
+\begin{itemize}
+    \item In general table~\ref{tab:results_comparison} shows that the results are rather bad.
+        But there have been improvements on images that were not from the ImageNet validation set and with 8 reconstructions instead of 16.
+        Experiments with different reconstruction counts are currently running.
+        The effects of choosing 8 different images from the validation set is also worth studying.
+    \item Table~\ref{tab:results_comparison_relu} shows that removing the last ReLU is not beneficial in most cases.
+        That can be seen as an indicator, that simply averaging in the foreign space is not the best way to aggregate.
+    \item Table~\ref{tab:results_comparison_avg} shows that using the average of previously completed reconstructions is better in most cases. 
+    \item Tables~\ref{tab:results_comparison_rn50} and~\ref{tab:results_comparison_vgg16} show that deeper networks seem to perform better.
+\end{itemize}
+
 \subsection{Possible Extensions}
 This idea can be extended in multiple directions without diverging from the main concept.
 Possible extension in direction of how $h$ is chosen include:
@@ -274,8 +288,6 @@ Extensions towards adjusting the loss and distance functions include:
     \item Combining multiple losses $\mathcal{L}_{h_1}, \mathcal{L}_{h_2}, \dots$ for different backbones $h_1, h_2, \dots$ is a simple but not yet explored extension.
 \end{enumerate}
 
-\section{Conclusion}
-Summary of findings and suggestions for future work.
 
 \bibliographystyle{plain}
 \bibliography{references}
