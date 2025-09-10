@@ -5,12 +5,14 @@
 \usepackage{amssymb}
 \usepackage{hyperref}
 \usepackage{geometry}
+\usepackage[table]{xcolor}
 \usepackage{cite}
-\usepackage{xcolor}
+
+\definecolor{verylightgray}{gray}{0.85}
 
 \geometry{margin=1in}
 
-\title{Improving Model Inversion Attacks Using Additional Backbones}
+\title{Improving Model Inversion Using Additional Backbones}
 \author{Christopher Roßbach \\ FAU-Erlangen-Nürnberg}
 \date{\today}
 
@@ -18,23 +20,24 @@
 
 \maketitle
 \begin{abstract}
-    Model inversion attacks aim to infer sensitive information about input or training data from the outputs or representations of machine learning models.
-    In this work we explore model inversion in the form of reconstructing images from their feature embeddings in a known latent space.
-    We explore the effectiveness of optimization based methods in different latent spaces.
+    Model inversion, also referred to as feature inversion, aims to reconstruct the input of a neural model from the outputs or intermediate representations of the model.
+    In this work, we aim to reconstruct images from their feature embeddings in a known latent space.
+    The task of reconstructing the input in full fidelity is highly ill-posed and requires the incorporation of additional constraints and priors, especially when using deep features of vision models.
+    %TODO add the ref for that \cite{dosovitskiyInvertingVisualRepresentations2016}
+    We explore the effectiveness of optimization based methods in different latent spaces obtained from different vision models.
     Using the discovered findings, we propose a method that leverages the embeddings of multiple reconstruction candidates in foreign latent spaces to improve reconstruction quality.
 \end{abstract}
 
 \section{Introduction}
-Model inversion attacks pose significant risks by reconstructing private information about either training data or model inputs.
+The reconstruction of network inputs from intermediate presentations produced by model can be used to evaluate the privacy risks of sharing such representations.
+Due to the ill-posed nature of the problem, one may expect that the reconstruction of the input is not possible in practice and thus share such representations without caution.
+%TODO rewrite from here
 This report investigates techniques that try to reconstruct the full model input from a latent representation.
 We limit ourselves to the task of image reconstruction from feature embeddings given by a pretrained vision backbone.
 We assume a white-box setting where the attacker has access to the model architecture and parameters as well as the feature embedding of the target image.
 
-We aim to approximate the private image $x^*$ owned by the victim from its embedding $y^* = f(x^*)$ where $f$ is a pretrained known backbone network and $y^*$ is the embedding known to the attacker (either leaked or purposely shared).
-
-\section{Related Work}
-Brief overview of previous research on model inversion attacks and defense mechanisms.
-
+We aim to approximate the private image $x^*$ owned by the victim from its embedding $y^* = f(x^*)$.
+We assume that both, the network $f$ and the embedding $y^*$ are known to the attacker (either leaked or purposely shared).
 
 \section{Methodology}
 We try to reconstruct the private image from its embedding through an optimization process.
@@ -94,7 +97,8 @@ g_{\alpha,\beta}(x) = \text{relu}(x - \alpha) + \beta\cdot\text{relu}(x - \alpha
 $$
 This quadratic dead zone penalty function allows for punishment-free variation in the interval $\lbrack-\alpha,\alpha\rbrack$ and (for big enough $\beta$) limits the total variation to be close to $\alpha$.
 The use of this penalty function makes sure, that the this regularization term does not loose importance when adding additional terms to the objective function of the optimization.
-A parameter selection of $\alpha = 0.3$ and $\beta = 10$ was found to yield good results in practice.\footnote{We could pin this to the avg value of e.g. ImageNet Data.}
+A parameter selection of $\alpha = 0.3$ and $\beta = 10$ was found to yield good results in practice.
+%TODO \footnote{We could pin this to the avg value of e.g. ImageNet Data.}
 
 \subsection{Impact of Inverted Model}
 The reconstruction method described in Section~\ref{base_method} yields visibly different results when using different backbones $f$.
@@ -181,7 +185,8 @@ For all of them (except clip) we used a model pretrained on ImageNet without its
 For the CLIP model, we used an OpenAI pretrained version as presented in~\cite{radfordLearningTransferableVisual2021}.
 As metrics for the evaluation of the reconstruction quality we used the structural similarity index measure (SSIM)~\cite{zhouwangImageQualityAssessment2004}, the learned perceptual image patch similarity (LPIPS)~\cite{zhangUnreasonableEffectivenessDeep2018} as well as the cosine similarity based distance to the ground truth CLIP embedding of the image ($\mathcal{L}_{\text{clip}}(\hat x, \text{clip}(x))$).
 The SSIM value is supplemented by LPIPS, which is used to measure perceptual similarity, as a human viewer would perceive it and by the CLIP loss, which measures how well the reconstruction captures the semantic content of the original image.
-The results can be seen in table~\ref{tab:results_comparison}\footnote{Add standard deviations.}.
+%TODO \footnote{This needs a reference.}
+The results can be seen in table~\ref{tab:results_comparison}.
 
 \begin{table*}[ht]
     \centering
@@ -190,22 +195,99 @@ The results can be seen in table~\ref{tab:results_comparison}\footnote{Add stand
             Comparison of reconstruction quality for different choices of $y_h$.
             SSIM and CLIP cos sim: higher is better.
             LPIPS: lower is better.
+            Each reported value is the average over 8 different images chosen randomly from the imagenet validation set.
+            For each of the images 16 reconstructions were performed and their metrics were averaged.
         }
         \label{tab:results_comparison}
 \end{table*}
 
-The calculation of $y_h$ was performed by using $m=8$ parallel reconstructions and in the two different ways described in Section~\ref{combining_backbones}:
+\begin{table*}[ht]
+    \centering
+        \input{figures/experiments_table_relu}
+        \caption{
+            Comparison of reconstruction quality with and without the last ReLU activation.
+            The differences are calculated with respect to the same backbone and $y_h$ configuration so that only the effect of the removal of the ReLU is shown.
+            Reference lines are indicated by a gray background.
+        }
+        \label{tab:results_comparison_relu}
+\end{table*}
+
+\begin{table*}[ht]
+    \centering
+        \input{figures/experiments_table_avg}
+        \caption{
+            Comparison of different methods of calculating $y_h$ (avg vs ref).
+            The differences are calculated with respect to the same backbone and relu configuration so that only the effect of the method of calculating $y_h$ is shown.
+            Reference lines are indicated by a gray background.
+        }
+        \label{tab:results_comparison_avg}
+\end{table*}
+
+\begin{table*}[ht]
+    \centering
+        \input{figures/experiments_table_rn50}
+        \caption{
+            Comparison of different depths of ResNets.
+            ResNet-50 is chosen as the reference value for the differences.
+            Reference lines are indicated by a gray background.
+        }
+        \label{tab:results_comparison_rn50}
+\end{table*}
+
+\begin{table*}[ht]
+    \centering
+        \input{figures/experiments_table_vgg16}
+        \caption{
+            Comparison of different depths of VGGs.
+            VGG-16 is chosen as the reference value for the differences.
+            Reference lines are indicated by a gray background.
+        }
+        \label{tab:results_comparison_vgg16}
+\end{table*}
+
+The calculation of $y_h$ was performed by using $m=16$ parallel reconstructions and in the two different ways described in Section~\ref{combining_backbones}:
 We choose $y_h$ to be the average of the current iteration ($y_h^\text{avg}=\overline{h(X^{(t)})}$) or to be a reference vector obtained by independently and previously completed run ($y_h^\text{ref}=\overline{h(X_f)}$).
 
 \section{Discussion}
-Interpretation of results, limitations, and potential improvements.
+\subsection{Results}
+TODO: Discuss results in tables~\ref{tab:results_comparison},~\ref{tab:results_comparison_relu},~\ref{tab:results_comparison_avg},~\ref{tab:results_comparison_rn50} and~\ref{tab:results_comparison_vgg16}.
+Notes so far:
 \begin{itemize}
-    \item only approximate components with high agreement in foreign space
-    \item difference between in and ood data
+    \item In general table~\ref{tab:results_comparison} shows that the results are rather bad.
+        But there have been improvements on images that were not from the ImageNet validation set and with 8 reconstructions instead of 16.
+        Experiments with different reconstruction counts are currently running.
+        The effects of choosing 8 different images from the validation set is also worth studying.
+    \item Table~\ref{tab:results_comparison_relu} shows that removing the last ReLU is not beneficial in most cases.
+        That can be seen as an indicator, that simply averaging in the foreign space is not the best way to aggregate.
+    \item Table~\ref{tab:results_comparison_avg} shows that using the average of previously completed reconstructions is better in most cases. 
+    \item Tables~\ref{tab:results_comparison_rn50} and~\ref{tab:results_comparison_vgg16} show that deeper networks seem to perform better.
 \end{itemize}
 
-\section{Conclusion}
-Summary of findings and suggestions for future work.
+\subsection{Possible Extensions}
+This idea can be extended in multiple directions without diverging from the main concept.
+Possible extension in direction of how $h$ is chosen include:
+\begin{enumerate}
+    \item The identity mapping $h(x) = x$ would correspond to averaging the reconstructions in pixel space.
+    That could encourage the reconstructions mechanism to maintain common features in pixel space that were already discovered.
+    \item Choosing $h$ as an autoencoder trained on a large corpus of images could encourage the reconstructions to maintain features that are common in natural images.
+    \item If the attacker has a suspicion about the distribution of the private image, $h$ could be chosen as a backbone trained on a similar distribution.
+    \item If the attacker is only interested in the reconstruction of certain parts of the image, $h$ could be chosen as a backbone trained for that specific task (e.g. face recognition).
+    \item In the same manner the backbone $f$ could be appended by a task specific head $c$ to encourage the reconstruction of certain features and $h$ can be chosen to be $c \circ f$.
+    \item If $x^*$ stems from a different distribution than the data used to train $f$, the effect of using foreign backbones $h$ may increase.
+    Especially if $h$ is trained on a distribution similar to the one of $x^*$.
+\end{enumerate}
+Possible extensions in direction of how $y_h$ is calculated include:
+\begin{enumerate}
+    \item Instead of using the average embedding in the foreign space, one could use a more robust statistic like the median or a trimmed mean.
+    \item One could also use a clustering algorithm to identify groups of similar reconstructions and use the centroid of the largest cluster as $y_h$.
+    \item For location sensitive embeddings $h$ (e.g. $h=\text{id}$) using image registration method like RANSAC-Flow~\cite{shenRANSACFlowGenericTwoStage2020} before averaging could be beneficial as this method already was shown to be effective for other reconstruction scenarios as in~\cite{yinSeeGradientsImage2021}.
+\end{enumerate}
+Extensions towards adjusting the loss and distance functions include:
+\begin{enumerate}
+    \item Another extension would be to adjust the distance function $d_h$ to punish certain components differently depending on the agreement of the reconstructions in the foreign space in that components.
+    \item Combining multiple losses $\mathcal{L}_{h_1}, \mathcal{L}_{h_2}, \dots$ for different backbones $h_1, h_2, \dots$ is a simple but not yet explored extension.
+\end{enumerate}
+
 
 \bibliographystyle{plain}
 \bibliography{references}
