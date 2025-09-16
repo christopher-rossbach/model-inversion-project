@@ -231,18 +231,14 @@ Especially for reconstructions using a backbone $h$ that has a different archite
 This may be some form of generalization effect, as the features learned by different architectures may be more general and thus provide a more informative guidance during the reconstruction process, especially for the CLIP model where the training data is more diverse.
 \section{Discussion}
 \subsection{Results}
-TODO: Discuss results in tables~\ref{tab:best_rows_comparison},~\ref{tab:results_comparison_relu},~\ref{tab:results_comparison_avg},~\ref{tab:results_comparison_rn50} and~\ref{tab:results_comparison_vgg16}.
-Notes so far:
-\begin{itemize}
-    \item In general table~\ref{tab:best_rows_comparison} shows that the results are rather bad.
-        But there have been improvements on images that were not from the ImageNet validation set and with 8 reconstructions instead of 16.
-        Experiments with different reconstruction counts are currently running.
-        The effects of choosing 8 different images from the validation set is also worth studying.
-    \item Table~\ref{tab:results_comparison_relu} shows that removing the last ReLU is not beneficial in most cases.
-        That can be seen as an indicator, that simply averaging in the foreign space is not the best way to aggregate.
-    \item Table~\ref{tab:results_comparison_avg} shows that using the average of previously completed reconstructions is better in most cases. 
-    \item Tables~\ref{tab:results_comparison_rn50} and~\ref{tab:results_comparison_vgg16} show that deeper networks seem to perform better.
-\end{itemize}
+Table~\ref{tab:best_rows_comparison} shows the results from the best parametrizations for each architecture.
+That means, we chose deepest version for each network and the ReLU was not removed from the backbones, also we used the reference method to calculate $y_h$.
+The results do not show a clear improvement over the base method, but there are some improvements in certain metrics for certain backbones.
+The fact that using more parallel reconstructions shows only slight improvements or even degrades the performance for some metrics indicates that the aggregation method of simply averaging the embeddings in the foreign space is not optimal.
+Also the observed behavior that removing the last ReLU activation generally degrades the performance, despite the observed distribution shift in section~\ref{combining_backbones}, supports this and motivates further research in the direction of better aggregation methods.
+
+Table~\ref{tab:results_comparison_in_vs_ffhq} shows that using foreign backbones seems to be especially beneficial when reconstructing images from a different distribution than the one used to train the backbone $f$, even when $h$ is not trained on the distribution of $x^*$.
+Using a backbone trained on a similar distribution as $x^*$ may further increase this effect.
 
 \subsection{Possible Extensions}
 This idea can be extended in multiple directions without diverging from the main concept.
