@@ -103,7 +103,6 @@ $$
 This quadratic dead zone penalty function allows for punishment-free variation in the interval $\lbrack-\alpha,\alpha\rbrack$ and (for big enough $\beta$) limits the total variation to be close to $\alpha$.
 The use of this penalty function makes sure, that the this regularization term does not loose importance when adding additional terms to the objective function of the optimization.
 A parameter selection of $\alpha = 0.3$ and $\beta = 10$ was found to yield good results in practice.
-%TODO \footnote{We could pin this to the avg value of e.g. ImageNet Data.}
 
 \subsection{Impact of Inverted Model}
 The reconstruction method described in Section~\ref{base_method} yields visibly different results when using different backbones $f$.
@@ -190,21 +189,6 @@ For all of them (except clip) we used a model pretrained on ImageNet without its
 For the CLIP model, we used an OpenAI pretrained version as presented in~\cite{radfordLearningTransferableVisual2021}.
 As metrics for the evaluation of the reconstruction quality we used the structural similarity index measure (SSIM)~\cite{zhouwangImageQualityAssessment2004}, the learned perceptual image patch similarity (LPIPS)~\cite{zhangUnreasonableEffectivenessDeep2018} as well as the cosine similarity based distance to the ground truth CLIP embedding of the image ($\mathcal{L}_{\text{clip}}(\hat x, \text{clip}(x))$).
 The SSIM value is supplemented by LPIPS, which is used to measure perceptual similarity, as a human viewer would perceive it and by the CLIP loss, which measures how well the reconstruction captures the semantic content of the original image.
-%TODO \footnote{This needs a reference.}
-The results can be seen in table~\ref{tab:results_comparison}.
-
-\begin{table*}[ht]
-    \centering
-        \input{figures/experiments_table}
-        \caption{
-            Comparison of reconstruction quality for different choices of $y_h$.
-            SSIM and CLIP cos sim: higher is better.
-            LPIPS: lower is better.
-            Each reported value is the average over 8 different images chosen randomly from the imagenet validation set.
-            For each of the images 16 reconstructions were performed and their metrics were averaged.
-        }
-        \label{tab:results_comparison}
-\end{table*}
 
 \begin{table*}[ht]
     \centering
@@ -274,12 +258,25 @@ The results can be seen in table~\ref{tab:results_comparison}.
     \centering
         \input{figures/experiments_in_vs_ffhq}
         \caption{
-        ----
+        Comparison of reconstruction quality improvement when reconstructing images from the FFHQ dataset instead of the ImageNet validation set.
+        The values indicate the difference in the corresponding metric compared to the baseline method on FFHQ data.
+        The numbers in parentheses indicate the difference to the corresponding improvement when reconstructing images from the ImageNet validation set.
         }
         \label{tab:results_comparison_in_vs_ffhq}
 \end{table*}
 
-The calculation of $y_h$ was performed by using $m=16$ parallel reconstructions and in the two different ways described in Section~\ref{combining_backbones}:
+\begin{table*}[ht]
+    \centering
+        \input{figures/experiments_best_rows_table}
+        \caption{
+            Comparison of reconstruction quality for different the best parametrizations for each architecture.
+            Each reported value is the average over 8 different images chosen randomly from the imagenet validation set.
+            For each of the images 4 reconstructions were performed and their metrics were averaged.
+        }
+        \label{tab:best_rows_comparison}
+\end{table*}
+
+The calculation of $y_h$ was performed by using $m=4$ parallel reconstructions and in the two different ways described in Section~\ref{combining_backbones}:
 We choose $y_h$ to be the average of the current iteration ($y_h^\text{avg}=\overline{h(X^{(t)})}$) or to be a reference vector obtained by independently and previously completed run ($y_h^\text{ref}=\overline{h(X_f)}$).
 \subsection{Influence of the Last ReLU}
 The effect of removing the last ReLU activation can be seen in table~\ref{tab:results_comparison_relu}.
@@ -309,12 +306,20 @@ For the best performing backbones (rn152, vgg19, clip (each without modification
 Going from 4 to 8 parallel reconstructions yields an improvement for the VGG and CLIP backbones while the ResNet performance degrades as can be seen in table~\ref{tab:results_comparison_04_to_08_recons}
 Doubling the parallel reconstructions again from 8 to 16 continues this trend only partially as can be seen in table~\ref{tab:results_comparison_08_to_16_recons}.
 
+\subsection{Effect of the Data Distribution}
+Incorporating foreign backbones $h$ may be especially beneficial if the private image $x^*$ stems from a different distribution than the data used to train the backbone $f$.
+To evaluate the effect of incorporating foreign embeddings on the reconstruction quality when reconstructing images from a different distribution than $f$ was trained on, we performed experiments on images from the FFHQ dataset~\cite{karras2019style}.
+In table~\ref{tab:results_comparison_in_vs_ffhq} we display how much the reconstruction quality improves for the FFHQ dataset when using different foreign backbones.
+In parentheses we display the difference to the corresponding improvement when reconstructing images from the ImageNet validation set.
+
+Especially for reconstructions using a backbone $h$ that has a different architecture than $f$ (e.g. VGG or CLIP) we observe a improvement in reconstruction quality when reconstructing images from the FFHQ dataset compared to the ImageNet validation set.
+This may be some form of generalization effect, as the features learned by different architectures may be more general and thus provide a more informative guidance during the reconstruction process, especially for the CLIP model where the training data is more diverse.
 \section{Discussion}
 \subsection{Results}
-TODO: Discuss results in tables~\ref{tab:results_comparison},~\ref{tab:results_comparison_relu},~\ref{tab:results_comparison_avg},~\ref{tab:results_comparison_rn50} and~\ref{tab:results_comparison_vgg16}.
+TODO: Discuss results in tables~\ref{tab:best_rows_comparison},~\ref{tab:results_comparison_relu},~\ref{tab:results_comparison_avg},~\ref{tab:results_comparison_rn50} and~\ref{tab:results_comparison_vgg16}.
 Notes so far:
 \begin{itemize}
-    \item In general table~\ref{tab:results_comparison} shows that the results are rather bad.
+    \item In general table~\ref{tab:best_rows_comparison} shows that the results are rather bad.
         But there have been improvements on images that were not from the ImageNet validation set and with 8 reconstructions instead of 16.
         Experiments with different reconstruction counts are currently running.
         The effects of choosing 8 different images from the validation set is also worth studying.
