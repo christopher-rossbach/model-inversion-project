@@ -21,7 +21,7 @@
 \maketitle
 \begin{abstract}
     Model inversion, also referred to as feature inversion, aims to reconstruct the input of a neural model from the outputs or intermediate representations of the model.
-    In this work, we aim to reconstruct images from their feature embeddings in a known latent space.
+    In this work, we aim to reconstruct images from their embeddings in a known latent space.
     The task of reconstructing the input in full fidelity is highly ill-posed and requires the incorporation of additional constraints and priors, especially when using deep features of vision models.
     %TODO add the ref for that \cite{dosovitskiyInvertingVisualRepresentations2016}
     We explore the effectiveness of optimization based methods in different latent spaces obtained from different vision models.
@@ -263,6 +263,15 @@ The results can be seen in table~\ref{tab:results_comparison}.
         The differences are calculated with respect to using 8 parallel reconstructions.
         }
         \label{tab:results_comparison_08_to_16_recons}
+\end{table*}
+
+\begin{table*}[ht]
+    \centering
+        \input{figures/experiments_in_vs_ffhq}
+        \caption{
+        ----
+        }
+        \label{tab:results_comparison_in_vs_ffhq}
 \end{table*}
 
 The calculation of $y_h$ was performed by using $m=16$ parallel reconstructions and in the two different ways described in Section~\ref{combining_backbones}:
