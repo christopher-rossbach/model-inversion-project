@@ -31,23 +31,23 @@
 The reconstruction of network inputs from intermediate representations produced by a model can be used to evaluate the privacy risks of sharing such representations.
 Due to the ill-posed nature of the problem, one may expect that the reconstruction of the input is not possible in practice and thus share such representations without caution.
 As the private input may contain sensitive or private information, the ability to reconstruct the input from such representations poses a significant privacy risk.
-As such, one can consider the reconstruction of the input from intermediate representations as an attack on the privacy of the victim owning the input data.
-This report investigates techniques that try to reconstruct the full model input from a latent representation.
+Thus, reconstructing the input from intermediate representations can be considered an attack on the privacy of the victim owning the input data.
+This report investigates techniques that attempt to reconstruct the full model input from a latent representation.
 We limit ourselves to the task of image reconstruction from feature embeddings given by a pretrained vision backbone.
 We assume a white-box setting where the attacker has access to the model architecture and parameters as well as the feature embedding of the target image.
 
 We aim to approximate the private image $x^*$ owned by the victim from its embedding $y^* = f(x^*)$.
-We assume that both, the network $f$ and the embedding $y^*$ are known to the attacker (either leaked or purposely shared).
+We assume that both the network $f$ and the embedding $y^*$ are known to the attacker (either leaked or purposely shared).
 
 To leverage the information contained in the model $f$, we employ an optimization-based approach that iteratively refines a reconstruction proposal $\hat{x}$ to minimize the distance between its embedding $f(\hat{x})$ and the target $y^*$.
 To address the inherent ambiguity of the inversion process, we propose incorporating additional information from foreign backbones $h$ by encouraging the reconstructions to have similar embeddings under $h$.
 Empirically, we observe that embeddings of different reconstruction candidates under a foreign backbone tend to scatter around the true embedding $h(x^*)$.
-By leveraging this property, we intent to improve reconstruction quality, by pulling the embeddings of the reconstruction candidates closer together.
-Our findings show clear trends in different dimensions of the reconstruction process, including the choice of foreign backbone, the method of aggregating embeddings, the number of parallel reconstructions used and the effect of the data distribution.
+By leveraging this property, we intend to improve reconstruction quality by pulling the embeddings of the reconstruction candidates closer together.
+Our findings show clear trends in different dimensions of the reconstruction process, including the choice of foreign backbone, the method of aggregating embeddings, the number of parallel reconstructions used, and the effect of the data distribution.
 
 \section{Methodology}
-We try to reconstruct the private image from its embedding through an optimization process.
-The problem of reconstructing the private image from its embedding is a strongly ill posed which forces us to incorporate additional constraints and priors to the optimization process.
+We attempt to reconstruct the private image from its embedding through an optimization process.
+The problem of reconstructing the private image from its embedding is strongly ill-posed, which forces us to incorporate additional constraints and priors into the optimization process.
 The optimization problem can be formulated as
 $$
 \min_{\hat{x}} d_f(f(\hat{x}), y^*) + \mathcal{R}(\hat{x}),
@@ -88,7 +88,7 @@ We incorporate these augmentations into the optimization process as a prior by a
 The transformation is thereby chosen randomly from $(\text{scale}, \text{rotate}, \text{translate}_h, \text{translate}_v) \in \lbrack 0.7, 1.5\rbrack\times \lbrack -30, 30\rbrack \times \lbrack -0.1, 0.1\rbrack \times \lbrack -0.1, 0.1\rbrack$.
 
 \subsection{Regularization}\label{reg}
-For regularization we use a term based on total variation as proposed in~\cite{mahendranUnderstandingDeepImage2015} with the adjustment of using a $L_1$ distance:
+For regularization, we use a term based on total variation as proposed in~\cite{mahendranUnderstandingDeepImage2015}, with the adjustment of using a $L_1$ distance:
 $$
 \mathcal{R}(x) = g_{\alpha,\beta}\left(\dfrac{\mathcal{R}_{TV}(x)}{(n-1)^2}\right)
 $$
@@ -97,24 +97,24 @@ $$
 \mathcal{R}_{TV}(x) = \sum_{i,j} \left| x_{i,j} - x_{i + 1,j} \right| + \left| x_{i,j} - x_{i,j + 1} \right|.
 $$
 This term is used to penalize sharp edges in the reconstructed images.
-Here $n$ refers to the width of the square image and $g_{\alpha,\beta}$ is a penalty function that balances the contribution of the total variation term and is defined as:
+Here $n$ refers to the width of the square image, and $g_{\alpha,\beta}$ is a penalty function that balances the contribution of the total variation term and is defined as:
 $$
 g_{\alpha,\beta}(x) = \text{relu}(x - \alpha) + \beta\cdot\text{relu}(x - \alpha) ^ 2.
 $$
-This quadratic dead zone penalty function allows for punishment-free variation in the interval $\lbrack-\alpha,\alpha\rbrack$ and (for big enough $\beta$) limits the total variation to be close to $\alpha$.
-The use of this penalty function makes sure, that the this regularization term does not loose importance when adding additional terms to the objective function of the optimization.
+This quadratic dead zone penalty function allows for punishment-free variation in the interval $\lbrack-\alpha,\alpha\rbrack$ and (for large enough $\beta$) limits the total variation to be close to $\alpha$.
+The use of this penalty function ensures that this regularization term does not lose importance when adding additional terms to the objective function of the optimization.
 A parameter selection of $\alpha = 0.3$ and $\beta = 10$ was found to yield good results in practice.
 
 \subsection{Impact of Inverted Model}
 The reconstruction method described in Section~\ref{base_method} yields visibly different results when using different backbones $f$.
-It is to note, that the reconstruction for different backbones does not strictly yield better or worse reconstructions, but rather reconstruction with qualitatively different details.
-This effect can be seen in figure~\ref{fig:resnet_vs_clip}.
+It is important to note that reconstruction for different backbones does not strictly yield better or worse results, but rather reconstructions with qualitatively different details.
+This effect can be seen in Figure~\ref{fig:resnet_vs_clip}.
 
-For the picture of the safe, we note that the reconstruction on a ResNet backbone gives a picture containg structural properties of a safe, while the reconstruction on the clip embedding seems to reproduce the text contained in the lower right corner of original picture.
-For the dog picture, the reconstruction based on the clip embedding yields a better representation of the dog's features compared to the ResNet based reconstruction, while the ResNet reconstruction contains patterns of the background.
-In the reconstruction of the fish picture the ResNet based reconstruction focuses on the fish's shape and the hands while the clip based reconstruction reconstructs the face of the person holding the fish.
+For the picture of the safe, we note that the reconstruction on a ResNet backbone gives a picture containing structural properties of a safe, while the reconstruction on the CLIP embedding seems to reproduce the text contained in the lower right corner of the original picture.
+For the dog picture, the reconstruction based on the CLIP embedding yields a better representation of the dog's features compared to the ResNet-based reconstruction, while the ResNet reconstruction contains patterns of the background.
+In the reconstruction of the fish picture, the ResNet-based reconstruction focuses on the fish's shape and the hands, while the CLIP-based reconstruction reconstructs the face of the person holding the fish.
 
-From this observation we conclude, that a improvement in reconstruction quality can be achieved by combining different backbones in the reconstruction process while maintaining the assumption to have access to a single embedding.
+From this observation, we conclude that an improvement in reconstruction quality may be achieved by combining different backbones in the reconstruction process while maintaining the assumption of access to a single embedding.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{figures/resnet-vs-clip.png}
@@ -125,14 +125,16 @@ From this observation we conclude, that a improvement in reconstruction quality 
 \end{figure}
 
 \subsection{Average of Foreign Embeddings}
-Another important observation is that if we have two different backbones $f$ and $h$, a private image $x^*$ and a slightly modified version $x^*_p$ of the private image for which $f(x^*)\approx f(x^*_p)$ then we also observe $h(x^*)\approx h(x^*_p)$.
+Another important observation is that if we have two different backbones $f$ and $h$, a private image $x^*$, and a slightly modified version $x^*_p$ of the private image for which $f(x^*)\approx f(x^*_p)$, then we also observe $h(x^*)\approx h(x^*_p)$.
 That is, if we modify the private image only slightly, the embeddings produced by different backbones remain consistent.
-However, this behaviour does not apply to reconstructions: for a reconstruction $\hat x_f$ obtained by procedure described in~\ref{base_method} with respect to the backbone $f$ that suffices $f(\hat x_f)\approx f(x^*)$ we observe strong differences in the embedding under $h$, $d_h(h(\hat x_f),h(x^*)) \gg d_f(f(\hat x_f),f(x^*))\approx 0$.
-The same is true for two different reconstructions $\hat x_{f,0}$ and $\hat x_{f,1}$: while $f(\hat x_{f,0})\approx f(\hat x_{f,1})$ we observe $h(\hat x_{f,0})\not\approx h(\hat x_{f,1})$.
+However, this behavior does not apply to reconstructions: for a reconstruction $\hat x_f$ obtained by the procedure described in~\ref{base_method} with respect to the backbone $f$ that satisfies $f(\hat x_f)\approx f(x^*)$, we observe strong differences in the embedding under $h$, $d_h(h(\hat x_f),h(x^*)) \gg d_f(f(\hat x_f),f(x^*))\approx 0$.
+The same is true for two different reconstructions $\hat x_{f,0}$ and $\hat x_{f,1}$: while $f(\hat x_{f,0})\approx f(\hat x_{f,1})$, we observe $h(\hat x_{f,0})\not\approx h(\hat x_{f,1})$.
 
-Furthermore, if we have a set of reconstruction $X_f = \{\hat x_{f,0}, \hat x_{f,1}, \dots\}$ we observe that that the average embedding under $h$ of the reconstructions $X_f$ is closer to the embedding und $h$ of the private image then the average distance of the reconstructions: $$d_h\left(\overline{h(X_f)}, h(x^*)\right) < \overline{d_h(h(X_f), h(x^*))}.$$
-We often observe the even stronger statement, that the averaged embedding is closer to the embedding of the private image then every single reconstruction: $$\forall\hat x_f \in X_f: d_h\left(\overline{h(X_f)}, h(x^*)\right) < d_h(h(\hat x_f), h(x^*)).$$
-This effect can be seen in figure~\ref{fig:avg_distance_scatter}.
+Furthermore, if we have a set of reconstructions $X_f = \{\hat x_{f,0}, \hat x_{f,1}, \dots\}$, we observe that the average embedding under $h$ of the reconstructions $X_f$ is closer to the embedding under $h$ of the private image than the average distance of the reconstructions:
+$$d_h\left(\overline{h(X_f)}, h(x^*)\right) < \overline{d_h(h(X_f), h(x^*))}.$$
+We often observe the even stronger statement, that the averaged embedding is closer to the embedding of the private image than every single reconstruction:
+$$\forall\hat x_f \in X_f: d_h\left(\overline{h(X_f)}, h(x^*)\right) < d_h(h(\hat x_f), h(x^*)).$$
+This effect can be seen in Figure~\ref{fig:avg_distance_scatter}.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{figures/avg-distance-scatter.png}
@@ -157,10 +159,10 @@ This idea is illustrated in figure~\ref{fig:avg_embedding_sketch}.
 \subsection{Combining Multiple Backbones}\label{combining_backbones}
 To potentially make use of this we explored multiple methods to incorporate the average in the foreign embedding space during the reconstruction process.
 
-Since most of the used networks apply a ReLu activation as their last non-linearity, simply calculating the arithmetic average in each coordinate leads to a huge shift in the shape of the distribution of embeddings.
-To reduce that shift, we can perform the averaging in the latent space before applying the last ReLu activation.
-The effect of this can bee seen in figure~\ref{fig:relu_norelu_distribution_shift}.
-We perform the experiments on both, the truncated and the original backbones.
+Since most of the used networks apply a ReLU activation as their last non-linearity, simply calculating the arithmetic average in each coordinate leads to a large shift in the shape of the distribution of embeddings.
+To reduce that shift, we can perform the averaging in the latent space before applying the last ReLU activation.
+The effect of this can be seen in Figure~\ref{fig:relu_norelu_distribution_shift}.
+We perform the experiments on both the truncated and the original backbones.
 
 \begin{figure}[ht]
     \centering
@@ -184,24 +186,24 @@ We will choose $y_h$ to either be $\overline{h(X^{(t)})}$, the average embedding
 We conducted a series of experiments to evaluate the effectiveness of the proposed method.
 We experimented with different choices of the foreign backbone $h$ and the construction of $y_h$.
 
-For the presented experiments we fixed $f$ to be a ResNet-50, pretrained on ImageNet without its classification layer.
-For $h$ we explored different ResNet backbones, ResNet-18, ResNet-34, ResNet-50, ResNet-101 and ResNet-152 (referred to as rn18, rn34, rn50, rn101, rn152), VGG-16 and VGG-19 (referred to as vgg16 and vgg19) and a CLIP ViT-L/14 (referred to as clip).
-For all of them (except clip) we used a model pretrained on ImageNet without its classification layer and also performed the experiments on the original and the version without the last ReLU activation (denoted by a -nrl suffix).
+For the presented experiments, we fixed $f$ to be a ResNet-50, pretrained on ImageNet without its classification layer.
+For $h$, we explored different ResNet backbones: ResNet-18, ResNet-34, ResNet-50, ResNet-101, and ResNet-152 (referred to as rn18, rn34, rn50, rn101, rn152), VGG-16 and VGG-19 (referred to as vgg16 and vgg19), and a CLIP ViT-L/14 (referred to as clip).
+For all of them (except clip), we used a model pretrained on ImageNet without its classification layer and also performed the experiments on the original and the version without the last ReLU activation (denoted by a -nrl suffix).
 For the CLIP model, we used an OpenAI pretrained version as presented in~\cite{radfordLearningTransferableVisual2021}.
-As metrics for the evaluation of the reconstruction quality we used the structural similarity index measure (SSIM)~\cite{zhouwangImageQualityAssessment2004}, the learned perceptual image patch similarity (LPIPS)~\cite{zhangUnreasonableEffectivenessDeep2018} as well as the cosine similarity based distance to the ground truth CLIP embedding of the image ($\mathcal{L}_{\text{clip}}(\hat x, \text{clip}(x))$).
-The SSIM value is supplemented by LPIPS, which is used to measure perceptual similarity, as a human viewer would perceive it and by the CLIP loss, which measures how well the reconstruction captures the semantic content of the original image.
+As metrics for the evaluation of the reconstruction quality, we used the structural similarity index measure (SSIM)~\cite{zhouwangImageQualityAssessment2004}, the learned perceptual image patch similarity (LPIPS)~\cite{zhangUnreasonableEffectivenessDeep2018}, as well as the cosine similarity-based distance to the ground truth CLIP embedding of the image ($\mathcal{L}_{\text{clip}}(\hat x, \text{clip}(x))$).
+The SSIM value is supplemented by LPIPS, which is used to measure perceptual similarity as a human viewer would perceive it, and by the CLIP loss, which measures how well the reconstruction captures the semantic content of the original image.
 
 
 The calculation of $y_h$ was performed by using $m=4$ parallel reconstructions and in the two different ways described in Section~\ref{combining_backbones}:
 We choose $y_h$ to be the average of the current iteration ($y_h^\text{avg}=\overline{h(X^{(t)})}$) or to be a reference vector obtained by independently and previously completed run ($y_h^\text{ref}=\overline{h(X_f)}$).
 \subsection{Influence of the Last ReLU}
-The effect of removing the last ReLU activation can be seen in table~\ref{tab:results_comparison_relu}.
-Despite the rather promising observations in figure~\ref{fig:relu_norelu_distribution_shift}, we observe that removing the last ReLU activation generally hurts the reconstruction quality independent of the metric used.
+The effect of removing the last ReLU activation can be seen in Table~\ref{tab:results_comparison_relu}.
+Despite the rather promising observations in Figure~\ref{fig:relu_norelu_distribution_shift}, we observe that removing the last ReLU activation generally hurts the reconstruction quality, independent of the metric used.
 
 The reason for this could be that removing the last ReLU activation increases the search space of the optimization problem significantly.
-This could lead to the optimization getting stuck in local minima more often.
-Another reason could be that the last ReLU activation is an important part of the backbone's learned representation and removing it degrades the quality of the features extracted by the backbone.
-This is because during training of the backbone the exact value of below zero activations were not relevant and thus not learned but now they contribute directly to the loss.
+This could cause the optimization to get stuck in local minima more often.
+Another reason could be that the last ReLU activation is an important part of the backbone's learned representation, and removing it degrades the quality of the features extracted by the backbone.
+This is because during training of the backbone, the exact value of below-zero activations was not relevant and thus not learned, but now they contribute directly to the loss.
 
 \subsection{Choice of Foreign Backbone}
 The choice of the foreign backbone $h$ has a measurable impact on the reconstruction quality.
@@ -211,12 +213,12 @@ This may be due to the fact that deeper networks are able to capture more comple
 The same effect can be observed in the family of VGG networks as can be seen in table~\ref{tab:results_comparison_vgg16}.
 
 \subsection{Method of Calculating the Reference Embedding}
-Whether using the average of the current reconstructions or a reference vector from a previous run has significant impact on the reconstruction quality as can be seen in table~\ref{tab:results_comparison_avg}.
-For the perceptual LPIPS metric and the CLIP based metric we observe a significant improvement when using the ref-method.
-This may be due to the fact that in the ref-method the reference vector can be freely developed in a independent run and thus may contain more complex features, while the avg-method pulls the reconstructions towards an average from the beginning of the optimization, which may discourage exploration of more diverse solutions.
+Whether using the average of the current reconstructions or a reference vector from a previous run has a significant impact on the reconstruction quality, as can be seen in Table~\ref{tab:results_comparison_avg}.
+For the perceptual LPIPS metric and the CLIP-based metric, we observe a significant improvement when using the ref-method.
+This may be because in the ref-method, the reference vector can be freely developed in an independent run and thus may contain more complex features, while the avg-method pulls the reconstructions towards an average from the beginning of the optimization, which may discourage exploration of more diverse solutions.
 
 On the other hand, the SSIM metric seems to benefit from the avg-method.
-This may be due to the same reason: the avg-method discourages complex features and thus reduce the development of strong structural artifacts that may be penalized by the SSIM metric.
+This may be due to the same reason: the avg-method discourages complex features and thus reduces the development of strong structural artifacts that may be penalized by the SSIM metric.
 
 For the best performing backbones (rn152, vgg19, clip (each without modification)) and the ref-method we performed additional experiments to evaluate the effect of the number of parallel reconstructions used to calculate $y_h$.
 Going from 4 to 8 parallel reconstructions yields an improvement for the VGG and CLIP backbones while the ResNet performance degrades as can be seen in table~\ref{tab:results_comparison_04_to_08_recons}
@@ -225,44 +227,44 @@ Doubling the parallel reconstructions again from 8 to 16 continues this trend on
 \subsection{Effect of the Data Distribution}
 Incorporating foreign backbones $h$ may be especially beneficial if the private image $x^*$ stems from a different distribution than the data used to train the backbone $f$.
 To evaluate the effect of incorporating foreign embeddings on the reconstruction quality when reconstructing images from a different distribution than $f$ was trained on, we performed experiments on images from the FFHQ dataset~\cite{karras2019style}.
-In table~\ref{tab:results_comparison_in_vs_ffhq} we display how much the reconstruction quality improves for the FFHQ dataset when using different foreign backbones.
-In parentheses we display the difference to the corresponding improvement when reconstructing images from the ImageNet validation set.
+In Table~\ref{tab:results_comparison_in_vs_ffhq}, we display how much the reconstruction quality improves for the FFHQ dataset when using different foreign backbones.
+In parentheses, we display the difference to the corresponding improvement when reconstructing images from the ImageNet validation set.
 
-Especially for reconstructions using a backbone $h$ that has a different architecture than $f$ (e.g. VGG or CLIP) we observe a improvement in reconstruction quality when reconstructing images from the FFHQ dataset compared to the ImageNet validation set.
-This may be some form of generalization effect, as the features learned by different architectures may be more general and thus provide a more informative guidance during the reconstruction process, especially for the CLIP model where the training data is more diverse.
+Especially for reconstructions using a backbone $h$ that has a different architecture than $f$ (e.g., VGG or CLIP), we observe an improvement in reconstruction quality when reconstructing images from the FFHQ dataset compared to the ImageNet validation set.
+This may be some form of generalization effect, as the features learned by different architectures may be more general and thus provide more informative guidance during the reconstruction process, especially for the CLIP model where the training data is more diverse.
 \section{Discussion}
 \subsection{Results}
 Table~\ref{tab:best_rows_comparison} shows the results from the best parametrizations for each architecture.
-That means, we chose deepest version for each network and the ReLU was not removed from the backbones, also we used the reference method to calculate $y_h$.
+That means we chose the deepest version for each network, the ReLU was not removed from the backbones, and we used the reference method to calculate $y_h$.
 The results do not show a clear improvement over the base method, but there are some improvements in certain metrics for certain backbones.
-The fact that using more parallel reconstructions shows only slight improvements or even degrades the performance for some metrics indicates that the aggregation method of simply averaging the embeddings in the foreign space is not optimal.
-Also the observed behavior that removing the last ReLU activation generally degrades the performance, despite the observed distribution shift in section~\ref{combining_backbones}, supports this and motivates further research in the direction of better aggregation methods.
+The fact that using more parallel reconstructions shows only slight improvements or even degrades the performance for some metrics indicates that the method of simply averaging the embeddings in the foreign space is not optimal.
+Also, the observed behavior that removing the last ReLU activation generally degrades performance, despite the observed distribution shift in Section~\ref{combining_backbones}, supports this and motivates further research into better aggregation methods.
 
 Table~\ref{tab:results_comparison_in_vs_ffhq} shows that using foreign backbones seems to be especially beneficial when reconstructing images from a different distribution than the one used to train the backbone $f$, even when $h$ is not trained on the distribution of $x^*$.
-Using a backbone trained on a similar distribution as $x^*$ may further increase this effect.
+Using a backbone trained on a similar distribution as the one $x^*$ was obtained from may further increase this effect.
 
 \subsection{Possible Extensions}
-This idea can be extended in multiple directions without diverging from the main concept.
-Possible extension in direction of how $h$ is chosen include:
+
+This idea can be extended in several directions without diverging from the main concept.
+Possible extensions regarding the choice of $h$ include:
 \begin{enumerate}
     \item The identity mapping $h(x) = x$ would correspond to averaging the reconstructions in pixel space.
-    That could encourage the reconstructions mechanism to maintain common features in pixel space that were already discovered.
+    That could encourage the reconstruction mechanism to maintain common features in pixel space that were already discovered.
     \item Choosing $h$ as an autoencoder trained on a large corpus of images could encourage the reconstructions to maintain features that are common in natural images.
     \item If the attacker has a suspicion about the distribution of the private image, $h$ could be chosen as a backbone trained on a similar distribution.
-    \item If the attacker is only interested in the reconstruction of certain parts of the image, $h$ could be chosen as a backbone trained for that specific task (e.g. face recognition).
-    \item In the same manner the backbone $f$ could be appended by a task specific head $c$ to encourage the reconstruction of certain features and $h$ can be chosen to be $c \circ f$.
-    \item If $x^*$ stems from a different distribution than the data used to train $f$, the effect of using foreign backbones $h$ may increase.
-    Especially if $h$ is trained on a distribution similar to the one of $x^*$.
+    \item If the attacker is only interested in the reconstruction of certain parts of the image, $h$ could be chosen as a backbone trained for that specific task (e.g., face recognition).
+    \item In the same manner, the backbone $f$ could be appended by a task-specific head $c$ to encourage the reconstruction of certain features, and $h$ can be chosen to be $c \circ f$.
+    \item If $x^*$ stems from a different distribution than the data used to train $f$, the effect of using foreign backbones $h$ may be increased, especially if $h$ is trained on a distribution similar to that of $x^*$.
 \end{enumerate}
-Possible extensions in direction of how $y_h$ is calculated include:
+Possible extensions regarding how $y_h$ is calculated include:
 \begin{enumerate}
     \item Instead of using the average embedding in the foreign space, one could use a more robust statistic like the median or a trimmed mean.
     \item One could also use a clustering algorithm to identify groups of similar reconstructions and use the centroid of the largest cluster as $y_h$.
-    \item For location sensitive embeddings $h$ (e.g. $h=\text{id}$) using image registration method like RANSAC-Flow~\cite{shenRANSACFlowGenericTwoStage2020} before averaging could be beneficial as this method already was shown to be effective for other reconstruction scenarios as in~\cite{yinSeeGradientsImage2021}.
+    \item For location-sensitive embeddings $h$ (e.g., $h=\text{id}$), using an image registration method like RANSAC-Flow~\cite{shenRANSACFlowGenericTwoStage2020} before averaging could be beneficial, as this method has already been shown to be effective for other reconstruction scenarios, as in~\cite{yinSeeGradientsImage2021}.
 \end{enumerate}
-Extensions towards adjusting the loss and distance functions include:
+Extensions regarding adjustments to the loss and distance functions include:
 \begin{enumerate}
-    \item Another extension would be to adjust the distance function $d_h$ to punish certain components differently depending on the agreement of the reconstructions in the foreign space in that components.
+    \item Another extension would be to adjust the distance function $d_h$ to punish certain components differently depending on the agreement of the reconstructions in the foreign space in those components.
     \item Combining multiple losses $\mathcal{L}_{h_1}, \mathcal{L}_{h_2}, \dots$ for different backbones $h_1, h_2, \dots$ is a simple but not yet explored extension.
 \end{enumerate}
 
