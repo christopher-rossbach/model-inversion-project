@@ -20,15 +20,15 @@
 
 \maketitle
 \begin{abstract}
-    Model inversion, also referred to as feature inversion, aims to reconstruct the input of a neural model from the outputs or intermediate representations of the model.
-    In this work, we aim to reconstruct images from their embeddings in a known latent space.
-    The task of reconstructing the input in full fidelity is highly ill-posed and requires the incorporation of additional constraints and priors, especially when using deep features of vision models.
-    We explore the effectiveness of optimization based methods in different latent spaces obtained from different vision models.
-    Using the discovered findings, we propose a method that leverages the embeddings of multiple reconstruction candidates in foreign latent spaces to improve reconstruction quality.
+    Model inversion, or feature inversion, seeks to reconstruct the original input of a neural network from its outputs or intermediate representations.
+    This process is highly ill-posed, especially when reconstructing images from deep feature embeddings, and thus requires strong priors and constraints to yield plausible results.
+    In this work, we investigate optimization-based methods for reconstructing images from their embeddings in various vision model latent spaces.
+    Building on empirical observations, we propose a novel approach that leverages the embeddings of multiple reconstruction candidates across different backbone models to improve reconstruction quality.
+    Our results motivate further work on how incorporating information from foreign backbones can enhance reconstruction fidelity.
 \end{abstract}
 
 \section{Introduction}
-The reconstruction of network inputs from intermediate presentations produced by model can be used to evaluate the privacy risks of sharing such representations.
+The reconstruction of network inputs from intermediate representations produced by a model can be used to evaluate the privacy risks of sharing such representations.
 Due to the ill-posed nature of the problem, one may expect that the reconstruction of the input is not possible in practice and thus share such representations without caution.
 As the private input may contain sensitive or private information, the ability to reconstruct the input from such representations poses a significant privacy risk.
 As such, one can consider the reconstruction of the input from intermediate representations as an attack on the privacy of the victim owning the input data.
@@ -39,10 +39,11 @@ We assume a white-box setting where the attacker has access to the model archite
 We aim to approximate the private image $x^*$ owned by the victim from its embedding $y^* = f(x^*)$.
 We assume that both, the network $f$ and the embedding $y^*$ are known to the attacker (either leaked or purposely shared).
 
-To leverage the information contained in the model $f$, we employ an optimization based approach that iteratively refines a reconstruction proposal $\hat{x}$ based on the gradient with respect to the input image to minimize the distance between its embedding $f(\hat{x})$ and the target embedding $y^*$.
-We propose to incorporate additional information from foreign backbones $h$ by encouraging the reconstruction proposals to have similar embeddings under $h$.
-This is based on the observation that the embeddings of different reconstruction proposals under a foreign backbone $h$ tend to scatter around the embedding of the private image $h(x^*)$.
-By encouraging the reconstruction proposals to have similar embeddings under $h$, we aim to improve the reconstruction quality.
+To leverage the information contained in the model $f$, we employ an optimization-based approach that iteratively refines a reconstruction proposal $\hat{x}$ to minimize the distance between its embedding $f(\hat{x})$ and the target $y^*$.
+To address the inherent ambiguity of the inversion process, we propose incorporating additional information from foreign backbones $h$ by encouraging the reconstructions to have similar embeddings under $h$.
+Empirically, we observe that embeddings of different reconstruction candidates under a foreign backbone tend to scatter around the true embedding $h(x^*)$.
+By leveraging this property, we intent to improve reconstruction quality, by pulling the embeddings of the reconstruction candidates closer together.
+Our findings show clear trends in different dimensions of the reconstruction process, including the choice of foreign backbone, the method of aggregating embeddings, the number of parallel reconstructions used and the effect of the data distribution.
 
 \section{Methodology}
 We try to reconstruct the private image from its embedding through an optimization process.
