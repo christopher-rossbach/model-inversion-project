@@ -1,0 +1,3 @@
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+sbatch.tinygpu $DIR/job.slurm /home/woody/iwi1/iwi1106h/data/ffhq/06863.png /home/woody/iwi1/iwi1106h/data/ffhq/35084.png /home/woody/iwi1/iwi1106h/data/ffhq/11427.png /home/woody/iwi1/iwi1106h/data/ffhq/53377.png
+sbatch.tinygpu $DIR/job.slurm /home/woody/iwi1/iwi1106h/data/ffhq/34937.png /home/woody/iwi1/iwi1106h/data/ffhq/14116.png /home/woody/iwi1/iwi1106h/data/ffhq/05000.png /home/woody/iwi1/iwi1106h/data/ffhq/49692.png

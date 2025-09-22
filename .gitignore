@@ -1,0 +1,8 @@
+.idea/
+__pycache__/
+checkpoints/
+embeddings/
+logs/
+media/
+out/
+wandb/
