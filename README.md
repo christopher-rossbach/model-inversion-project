@@ -1,14 +1,13 @@
 ResNet / CLIP Inversion and Reconstruction
 ================================================
 
-One-sentence summary:
-This repository contains experiments on inverting intermediate feature representations of ResNet / CLIP back to the pixel space using a modular, multi‑objective reconstruction optimizer.
-
-Project report:
 The project report (methods, quantitative tables, figure discussions) is available at [report/out/report.pdf](report/out/report.pdf).
 Not all details are covered in the report (see below).
 
+This repository contains experiments on inverting intermediate feature representations of ResNet / CLIP back to the pixel space using a modular, multi‑objective reconstruction optimizer.
+
 Quick start (core idea):
+
 Given one input image, we optimize either (a) the image pixels directly or (b) a GAN latent so that multiple feature projections (CLIP, ResNet stages, VGG, etc.) of the reconstruction match reference statistics (exact reference embedding or batch average) while regularizing perceptual quality.
 
 Key reconstruction algorithm features (see `inversion/reconstruction.py` and `inversion/run_config.py`):
