@@ -49,9 +49,9 @@ Our findings show clear trends in different dimensions of parametrization of the
 We attempt to reconstruct the private image from its embedding through an optimization process.
 The problem of reconstructing the private image from its embedding is strongly ill-posed, which forces us to incorporate additional constraints and priors into the optimization process.
 The optimization problem can be formulated as
-$$
+\begin{equation}
 \min_{\hat{x}} d_f(f(\hat{x}), y^*) + \mathcal{R}(\hat{x}),
-$$
+\end{equation}
 where $\mathcal{R}$ is a regularization term that encourages the reconstruction to be smooth and natural and $d_f$ is a distance function that is dependent on the used backbone $f$.
 For a ResNet backbone we use the mean squared error (MSE) as the distance function while using a cosine based distance for a CLIP encoder.
 \subsection{The Iterative Base Method}\label{base_method}
@@ -88,18 +88,18 @@ The transformation is thereby chosen randomly $(\text{scale}, \text{rotate}, \te
 
 \subsection{Regularization}\label{reg}
 For regularization, we use a term based on total variation as proposed in~\cite{mahendranUnderstandingDeepImage2015}, with the adjustment of using a $L_1$ distance:
-$$
+\begin{equation}
 \mathcal{R}(x) = g_{\alpha,\beta}\left(\dfrac{\mathcal{R}_{TV}(x)}{(n-1)^2}\right)
-$$
+\end{equation}
 with
-$$
+\begin{equation}
 \mathcal{R}_{TV}(x) = \sum_{i,j} \left| x_{i,j} - x_{i + 1,j} \right| + \left| x_{i,j} - x_{i,j + 1} \right|.
-$$
+\end{equation}
 This term is used to penalize sharp edges in the reconstructed images.
 Here $n$ refers to the width of the square image, and $g_{\alpha,\beta}$ is a penalty function that balances the contribution of the total variation term and is defined as:
-$$
+\begin{equation}
 g_{\alpha,\beta}(x) = \text{relu}(x - \alpha) + \beta\cdot\text{relu}(x - \alpha) ^ 2.
-$$
+\end{equation}
 This quadratic dead zone penalty function allows for punishment-free variation in the interval $\lbrack-\alpha,\alpha\rbrack$ and (for large enough $\beta$) limits the total variation to be close to $\alpha$.
 The use of this penalty function ensures that this regularization term does not lose importance when adding additional terms to the objective function of the optimization.
 A parameter selection of $\alpha = 0.3$ and $\beta = 10$ was found to yield good results in the experiments.
@@ -130,9 +130,13 @@ However, this behavior does not apply to reconstructions: for a reconstruction $
 The same is true for two different reconstructions $\hat x_{f,0}$ and $\hat x_{f,1}$: while $d_f(f(\hat x_{f,0}), f(\hat x_{f,1}))\approx 0$, we observe $d_h(h(\hat x_{f,0}), h(\hat x_{f,1})) \gg 0$.
 
 Furthermore, if we have a set of reconstructions $X_f = \{\hat x_{f,0}, \hat x_{f,1}, \dots\}$, we observe that the average embedding under $h$ of the reconstructions $X_f$ is closer to the embedding under $h$ of the private image than the average distance of the reconstructions:
-$$d_h\left(\overline{h(X_f)}, h(x^*)\right) < \overline{d_h(h(X_f), h(x^*))}.$$
+\begin{equation}
+d_h\left(\overline{h(X_f)}, h(x^*)\right) < \overline{d_h(h(X_f), h(x^*))}.
+\end{equation}
 We often observe the even stronger statement, that the averaged embedding is closer to the embedding of the private image than every single reconstruction:
-$$\forall\hat x_f \in X_f: d_h\left(\overline{h(X_f)}, h(x^*)\right) < d_h(h(\hat x_f), h(x^*)).$$
+\begin{equation}
+\forall\hat x_f \in X_f: d_h\left(\overline{h(X_f)}, h(x^*)\right) < d_h(h(\hat x_f), h(x^*)).
+\end{equation}
 This effect can be seen in Figure~\ref{fig:avg_distance_scatter}.
 \begin{figure}[ht]
     \centering
